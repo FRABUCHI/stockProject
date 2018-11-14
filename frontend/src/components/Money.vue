@@ -84,14 +84,16 @@ export default {
       ]
     }
   }
-  /*method: {
+  /* 
+  method: {
   //  getStockList() {
   //    this.$http.get('/api/stock')
   //    .then((res) => {
   //      this.stockList = res.data
   //    })
   //  }
-  //}*/
+  //} 
+  */
 }
 </script>
 

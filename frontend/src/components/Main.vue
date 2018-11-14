@@ -9,7 +9,7 @@
                     text-variant="black"
                     title="Stock"
                     sub-title="등락 예측">
-              <b-button href="/#/stock">GO!</b-button>
+              <b-button href="/stock">GO!!</b-button>
             </b-card>
           </b-col>
           <b-col cols="4">
@@ -17,7 +17,7 @@
                     text-variant="black"
                     title="Money"
                     sub-title="종목 추천">
-              <b-button href="/#/money">GO!</b-button>
+              <b-button href="/money">GO!</b-button>
             </b-card>
           </b-col>
       </b-row>
