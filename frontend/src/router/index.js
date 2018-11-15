@@ -18,14 +18,13 @@ Vue.use(BootstrapVue)
 
 let router = new Router({
   mode: 'history',
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'Main',
       component: Main
     },
     {
-      path: '/Login',
+      path: '/login',
       name: 'Login',
       component: Login
     },

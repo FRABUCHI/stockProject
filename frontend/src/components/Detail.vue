@@ -13,28 +13,22 @@
     </div>
 </template>
 
-
-
-<script> 
+<script>
 let detail_items = [
-  {주식명: "혁준이", 시가: 7, 고가: 777, 저가: 444, 종가: 789, 거래량: 777777},
+  { 주식명: "혁준이", 시가: 7, 고가: 777, 저가: 444, 종가: 789, 거래량: 777777 }
 ];
-
-
 
 export default {
   name: "App",
   data() {
     return {
       detail_fields: ["주식명", "시가", "고가", "저가", "종가", "거래량"],
-      detail_items: detail_items,
-    }
+      detail_items: detail_items
+    };
   },
   methods: {
     getStockDetail() {},
-    showAlert () { }
+    showAlert() {}
   }
 };
-
-
 </script>

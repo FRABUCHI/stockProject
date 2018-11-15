@@ -7,13 +7,16 @@ var mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
 var main = require('./routes/main');
+var login = require('./routes/login');
+var signup = require('./routes/signup');
 var stock = require('./routes/stock');
 var money = require('./routes/money');
 var detail = require('./routes/detail');
 
 var app = express();
+app.use(require('connect-history-api-fallback')());
 
-mongoose.connect("mongodb://localhost:27017/test", {
+mongoose.connect("mongodb://localhost:27017/MrStock", {
   useNewUrlParser: true
 });
 
@@ -29,6 +32,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', main);
+app.use('/api/login', login);
+app.use('/api/signup', signup);
 app.use('/api/stock', stock);
 app.use('/api/money', money);
 app.use('/api/detail', detail);

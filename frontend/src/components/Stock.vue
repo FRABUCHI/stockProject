@@ -58,18 +58,18 @@
 
 <script>
 let like_items = [
-  {주식명: "삼성전자", 시가: 100, 종가: 300, 고가: 150 },
-  {주식명: "LG전자", 시가: 120, 종가: 340, 고가: 120 },
-  {주식명: "SK하이닉스", 시가: 130, 종가: 270, 고가: 200 },
-  {주식명: "아주대", 시가: 105, 종가: 500, 고가: 720 },
-  {주식명: "Tonez", 시가: 111, 종가: 222, 고가: 333 }
+  { 주식명: "삼성전자", 시가: 100, 종가: 300, 고가: 150 },
+  { 주식명: "LG전자", 시가: 120, 종가: 340, 고가: 120 },
+  { 주식명: "SK하이닉스", 시가: 130, 종가: 270, 고가: 200 },
+  { 주식명: "아주대", 시가: 105, 종가: 500, 고가: 720 },
+  { 주식명: "Tonez", 시가: 111, 종가: 222, 고가: 333 }
 ];
 let total_items = [
-  {주식명: "A", 시가: 100, 종가: 300, 고가: 150 },
-  {주식명: "B", 시가: 120, 종가: 340, 고가: 120 },
-  {주식명: "C", 시가: 130, 종가: 270, 고가: 200 },
-  {주식명: "D", 시가: 105, 종가: 500, 고가: 720 },
-  {주식명: "E", 시가: 111, 종가: 222, 고가: 333 }
+  { 주식명: "A", 시가: 100, 종가: 300, 고가: 150 },
+  { 주식명: "B", 시가: 120, 종가: 340, 고가: 120 },
+  { 주식명: "C", 시가: 130, 종가: 270, 고가: 200 },
+  { 주식명: "D", 시가: 105, 종가: 500, 고가: 720 },
+  { 주식명: "E", 시가: 111, 종가: 222, 고가: 333 }
 ];
 
 export default {
@@ -86,15 +86,15 @@ export default {
       perPage: 3,
       dismissSecs: 1,
       dismissCountDown: 0
-    }
+    };
   },
   methods: {
     getStockDetail() {},
-    countDownChanged (dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
     },
-    showAlert () {
-      this.dismissCountDown = this.dismissSecs
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs;
     }
   }
 };
