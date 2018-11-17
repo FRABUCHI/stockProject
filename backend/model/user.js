@@ -27,11 +27,11 @@ var userSchema = new Schema({
     isAdmin: {
         type: Number,
         required: true
-    },
-    favorites: [{
-        id: Schema.Types.ObjectId,
-        addedDate: Date
-    }]
+    }
+    //favorites: [{
+    //    id: Schema.Types.ObjectId,
+    //    addedDate: Date
+    //}]
 });
 
 module.exports = mongoose.model('user', userSchema, "userlist");

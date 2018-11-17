@@ -3,15 +3,6 @@ var router = express.Router();
 var User = require('../model/user');
 const crypto = require('crypto'); //Node.js에서 제공하는 암호화 모듈
 
-router.get('/', function (req, res) {
-    User.find((err, user) => {
-        if (err) res.status(500).send({
-            error: 'database failure'
-        });
-        res.send(user)
-    });
-})
-
 // 회원가입
 router.post('/', function (req, res, next) {
     const user = new User();
@@ -21,6 +12,7 @@ router.post('/', function (req, res, next) {
     user.name = req.body.user.name;
     user.email = req.body.user.name;
     user.isAdmin = 0;
+    user.favorites;
 
     // 암호화 
     let cipher = crypto.createCipher('aes192', 'key');

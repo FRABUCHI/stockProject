@@ -9,6 +9,4 @@ var stockSchema = mongoose.Schema({
     low: String,
     volume: String
 });
-
-var stock = mongoose.model('stock', stockSchema, 'Stocklist');
-module.exports = stock;
+module.exports = mongoose.model('stock', stockSchema, 'stockList');
