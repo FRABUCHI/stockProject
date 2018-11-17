@@ -15,8 +15,8 @@
         <b-tabs>
             <b-tab title="관심종목" active>
               <b-table striped hover
-                       :items="like_items"
-                       :fields="like_fields"
+                       :items="favorites"
+                       :fields="favorites_fields"
                        :current-page="currentPage"
                        :per-page="perPage">
                         <template slot="상세보기" slot-scope="row">
@@ -29,17 +29,17 @@
             </b-tab>
             <b-tab title="전체종목" v-on:click="getStockList" active>
                 <b-table striped hover
-                         :items="total_items"
-                         :fields="total_fields"
+                         :items="stock"
+                         :fields="stock_fields"
                          :current-page="currentPage"
                          :per-page="perPage">
-                          <template slot="상세보기" slot-scope="row">
+                          <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'detail/:stockId'" 
                                      class="mr-2" variant="info">
                                 보기
                            </b-button>
                           </template>
-                          <template slot="즐겨찾기" slot-scope="row"> 
+                          <template slot="favorites" slot-scope="row"> 
                            <b-button size="sm" class="mr-2" @click="showAlert" variant="info">
                                 추가
                            </b-button>
@@ -57,19 +57,18 @@
 </template>
 
 <script>
-let like_items = [];
-let total_items = [];
 
 export default {
   name: "App",
   data() {
     return {
-      like_fields: ["주식명", "시가", "종가", "고가", "저가", "거래량", "상세보기"],
-      total_fields: ["주식명", "시가", "종가", "고가", "저가", "거래량", "상세보기", "즐겨찾기"],
-      like_items: like_items,
-      total_items: total_items,
-      likeRows: like_items.length,
-      totalRows: total_items.length,
+      favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail"],
+      stock_fields: ["company", "open", "close", "high", "low", "volume", "detail", "favorites"],
+      favorites: [],
+      stock: [],
+      favoritesRows: 0,
+      stockRows: 0,
+      totalRows: 0,
       currentPage: 1,
       perPage: 3,
       dismissSecs: 1,
@@ -81,8 +80,32 @@ export default {
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
-        total_items = res.data
-        console.log("Item: " + total_items)
+        this.stock = res.data
+        this.stockRows = this.stock.length
+        this.totalRows = this.stock.length
+        console.log("stock: " + this.stock)
+      }).catch((err) => [
+        console.log(err)
+      ])
+    },
+    getFavoritesList() {
+      this.$http.get('/api/stock/:userId')
+      .then((res) => {
+        console.log('Response Data: ' + res.data)
+        this.favorites = res.data
+        this.favoritesRows = this.favorites.length
+        this.totalRows = this.favorites.length
+        console.log("stock: " + this.stock)
+      }).catch((err) => [
+        console.log(err)
+      ])
+    },
+    addFavorites() {
+      this.$http.post('/api/stock/:userId', {
+        id
+      })
+      .then((res) => {
+        console.log(res.status)
       }).catch((err) => [
         console.log(err)
       ])
