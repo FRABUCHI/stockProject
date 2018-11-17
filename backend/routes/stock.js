@@ -32,7 +32,7 @@ router.get('/all', function (req, res, next) {
     })
 });
 
-router.post('/:userId', function (req, res, next) {
+router.post('/addFavorites', function (req, res, next) {
     const user = new User();
     var userId = req.params.userId;
     //관심 종목 데이터

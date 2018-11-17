@@ -101,8 +101,8 @@ export default {
       ])
     },
     addFavorites() {
-      this.$http.post('/api/stock/:userId', {
-        id
+      this.$http.post('/api/stock/addFavorites', {
+        id: this.stock.id
       })
       .then((res) => {
         console.log(res.status)
