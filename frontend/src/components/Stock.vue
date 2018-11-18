@@ -13,14 +13,14 @@
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
         <b-tabs>
-            <b-tab title="관심종목" active>
+            <b-tab title="관심종목" v-on:click="getFavoritesList" active>
               <b-table striped hover
                        :items="favorites"
                        :fields="favorites_fields"
                        :current-page="currentPage"
                        :per-page="perPage">
-                        <template slot="상세보기" slot-scope="row">
-                         <b-button size="sm" v-on:click="'/detail/:stockId'" 
+                        <template slot="detail" slot-scope="row">
+                         <b-button size="sm" v-on:click="'#'" 
                                    variant="info" class="mr-2">
                               보기
                          </b-button>
@@ -34,13 +34,13 @@
                          :current-page="currentPage"
                          :per-page="perPage">
                           <template slot="detail" slot-scope="row">
-                           <b-button size="sm" v-on:click="'detail/:stockId'" 
-                                     class="mr-2" variant="info">
+                           <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info">
                                 보기
                            </b-button>
                           </template>
                           <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="mr-2" @click="showAlert" variant="info">
+                           <b-button size="sm" class="mr-2"  
+                           @click="addFavorites(row.index)" variant="info">
                                 추가
                            </b-button>
                           </template>
@@ -57,7 +57,6 @@
 </template>
 
 <script>
-
 export default {
   name: "App",
   data() {
@@ -72,7 +71,8 @@ export default {
       currentPage: 1,
       perPage: 3,
       dismissSecs: 1,
-      dismissCountDown: 0
+      dismissCountDown: 0,
+      id: 'syl'
     };
   },
   methods: {
@@ -89,20 +89,40 @@ export default {
       ])
     },
     getFavoritesList() {
-      this.$http.get('/api/stock/:userId')
+      this.favorites = []
+      this.favoritesRows = 0
+      this.totalRows = 0
+      this.$http.get('/api/stock/favorites', {
+        id: this.id//유저아이디
+      })
       .then((res) => {
-        console.log('Response Data: ' + res.data)
-        this.favorites = res.data
-        this.favoritesRows = this.favorites.length
-        this.totalRows = this.favorites.length
-        console.log("stock: " + this.stock)
+        res.data.map((item)=>{
+          for(var i = 0; i < item.id.length; i++){
+            let name = item.id[i]
+            let num = -1
+            console.log('Response Data: ' + name)
+            for(var j = 0; j < 4; j++){
+              num = this.stock[j].company.indexOf(name)
+              if (num != -1) {
+                console.log(j); 
+                this.favorites.push(this.stock[ j ])
+                break;
+              }
+            }
+            this.favoritesRows = this.favorites.length
+            this.totalRows = this.favorites.length
+          }
+        })
       }).catch((err) => [
         console.log(err)
       ])
     },
-    addFavorites() {
+    addFavorites(index) {
+      console.log(this.stock[index].company)
+      let company = this.stock[index].company
       this.$http.post('/api/stock/addFavorites', {
-        id: this.stock.id
+        userId: 'syl',
+        company: company
       })
       .then((res) => {
         console.log(res.status)

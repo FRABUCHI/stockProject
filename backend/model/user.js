@@ -27,9 +27,10 @@ var userSchema = new Schema({
     isAdmin: {
         type: Number,
         required: true
-    },
+    }, 
     favorites: [{
-        id: String,
+        id: Array,
+        addedDate: Date
     }]
 });
 
