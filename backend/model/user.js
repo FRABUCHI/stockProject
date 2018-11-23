@@ -1,34 +1,48 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-var userSchema = new Schema({
-    id: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    create_date: {
-        type: Date,
-        default: Date.now
-    },
-    isAdmin: {
-        type: Number,
-        required: true
-    }, 
-    favourites: [{id: Array}]
-});
+const User = new Schema({
+    username: String,
+    password: String,
+    admin: {
+        type: Boolean,
+        default: false
+    }
+})
 
-module.exports = mongoose.model('user', userSchema, "userlist");
+// create new User document
+User.statics.create = function (username, password) {
+    console.log("2차 생성 이름, 패스워드: " + username + ' ' + password)
+
+    const user = new this({
+        username,
+        password
+    })
+
+    // return the Promise
+    return user.save(err => {
+        console.log(err)
+        if (err) return handledError(err)
+    })
+}
+
+// find one user by using username
+User.statics.findOneByUsername = function (username) {
+    console.log('1차 중복검사 find함수: ' + username)
+    return this.findOne({
+        username
+    }).exec()
+}
+
+
+// verify the password of the User documment
+User.methods.verify = function (password) {
+    return this.password === password
+}
+
+User.methods.assignAdmin = function () {
+    this.admin = true
+    return this.save()
+}
+
+module.exports = mongoose.model('User', User)

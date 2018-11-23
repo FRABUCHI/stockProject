@@ -1,7 +1,7 @@
 <template>
 <div id="login">
   <h1>This is Login Page!!!</h1>
-  <b-form @submit="onSubmit" @reset="onReset">
+  <b-form @submit.prevent="login" @reset="onReset">
     <b-form-group id="id"
                   label="ID:"
                   label-for="input1">
@@ -30,46 +30,39 @@
 
 <script>
 export default {
+  name: 'login',
   data() {
     return {
       user: {
-        id: "",
-        password: ""
+        id: '',
+        password: ''
       }
     };
   },
   methods: {
-    onSubmit(event) {
+    login(event) {
       event.preventDefault();
       alert(JSON.stringify(this.form));
-      this.$http
-        .post("/api/login", {
-          user: this.user
-        })
-        .then(
-          res => {
-            alert("로그인 되었습니다.");
-            this.$router.push("/");
-          },
-          err => {
-            alert(err.response.data.error);
-          }
-        )
-        .catch(err => {
-          alert(err);
-        });
+
+      this.$store.dispatch('retrieveToken', {
+        id: this.id,
+        password: this.password,
+      })
+      .then(res => {
+        this.$router.push({ name: 'Main' })
+      })
     },
-    onReset(evt) {
-      evt.preventDefault();
+    onReset (evt) {
+      evt.preventDefault()
       /* Reset our form values */
-      this.user.id = "";
-      this.user.password = "";
+      this.user.id = ''
+      this.user.password = ''
       /* Trick to reset/clear native browser form validation state */
-      this.show = false;
+      this.show = false
       this.$nextTick(() => {
-        this.show = true;
-      });
+        this.show = true
+      })
     }
   }
-};
+}
 </script>
