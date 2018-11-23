@@ -39,6 +39,24 @@ router.get('/all', function (req, res, next) {
     })
 })
 
+router.get('/:id', function (req, res, next) {
+    let company = req.params.id
+    //한 종목 데이터
+    StockList.findOne({company: company},function (err, data) {
+        // 구문 error
+        if (err) return res.status(500).json({
+            error: err
+        });
+        // 주식 리스트가가 없으면 error
+        if (!data) return res.status(404).json({
+            error: 'data not found'
+        });
+        console.log(`${company}`)
+        console.log(data)
+        res.json(data);
+    })
+})
+
 router.post('/addFavorites', function (req, res, next) {
     let userId = req.body.userId;
     let company = req.body.company;

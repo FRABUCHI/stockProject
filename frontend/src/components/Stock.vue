@@ -77,7 +77,6 @@ export default {
   },
   methods: {
     getStockList() {
-      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
