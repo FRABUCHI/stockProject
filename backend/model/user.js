@@ -28,10 +28,7 @@ var userSchema = new Schema({
         type: Number,
         required: true
     }, 
-    favorites: [{
-        id: Array,
-        addedDate: Date
-    }]
+    favourites: [{id: Array}]
 });
 
 module.exports = mongoose.model('user', userSchema, "userlist");

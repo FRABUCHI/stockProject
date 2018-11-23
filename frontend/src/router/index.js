@@ -45,7 +45,7 @@ let router = new Router({
       component: Money
     },
     {
-      path: '/detail',
+      path: '/detail/:company',
       name: 'Detail',
       component: Detail
     }

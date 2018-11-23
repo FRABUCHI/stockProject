@@ -4,6 +4,7 @@ var User = require('../model/user');
 var StockList = require('../model/stockList');
 
 router.get('/favorites', function (req, res, next) {
+    console.log('들어옴')
     //let id = req.body.id
     //관심 종목 데이터
     User.findOne({
@@ -36,20 +37,23 @@ router.get('/all', function (req, res, next) {
         console.log('Stock List: ' + data);
         res.json(data);
     })
-});
+})
 
 router.post('/addFavorites', function (req, res, next) {
-            let userId = req.body.userId;
-            let company = req.body.company;
-            console.log(userId+' '+ company)
-            User.findOneAndUpdate({
-                    id: userId
-                }, 
-                {
-                    $push: {
-                        id: company
-                    }
-                });
-            });
+    let userId = req.body.userId;
+    let company = req.body.company;
+    console.log(userId+' '+ company)
+    User.findOneAndUpdate({id: userId}, 
+        {
+            $push: {
+                favorites: {
+                    id: company
+                }
+        }
+        
+    });
+});
 
-        module.exports = router;
+
+
+module.exports = router;

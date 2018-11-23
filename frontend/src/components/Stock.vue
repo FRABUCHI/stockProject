@@ -20,8 +20,8 @@
                        :current-page="currentPage"
                        :per-page="perPage">
                         <template slot="detail" slot-scope="row">
-                         <b-button size="sm" v-on:click="'#'" 
-                                   variant="info" class="mr-2">
+                         <b-button size="sm" variant="info" class="mr-2"
+                                   @click="pushDetails(row.index)">
                               보기
                          </b-button>
                         </template>
@@ -32,15 +32,16 @@
                          :items="stock"
                          :fields="stock_fields"
                          :current-page="currentPage"
-                         :per-page="perPage">
+                         :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
-                           <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info">
+                           <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
+                                     @click="pushDetails(row.index)">
                                 보기
                            </b-button>
                           </template>
                           <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="mr-2"  
-                           @click="addFavorites(row.index)" variant="info">
+                           <b-button size="sm" class="mr-2" variant="info" 
+                                      @click="pushFavorites(row.index)">
                                 추가
                            </b-button>
                           </template>
@@ -55,7 +56,6 @@
          </b-row>
     </div>
 </template>
-
 <script>
 export default {
   name: "App",
@@ -69,20 +69,21 @@ export default {
       stockRows: 0,
       totalRows: 0,
       currentPage: 1,
-      perPage: 3,
+      perPage: 7,
       dismissSecs: 1,
       dismissCountDown: 0,
-      id: 'syl'
+      id:  'syl'
     };
   },
   methods: {
     getStockList() {
+      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
         this.stock = res.data
         this.stockRows = this.stock.length
-        this.totalRows = this.stock.length
+        this.totalRows = this.stock.length 
         console.log("stock: " + this.stock)
       }).catch((err) => [
         console.log(err)
@@ -117,7 +118,8 @@ export default {
         console.log(err)
       ])
     },
-    addFavorites(index) {
+    pushFavorites(index) {
+      this.dismissCountDown = this.dismissSecs;
       console.log(this.stock[index].company)
       let company = this.stock[index].company
       this.$http.post('/api/stock/addFavorites', {
@@ -130,12 +132,25 @@ export default {
         console.log(err)
       ])
     },
+    //동적라우팅
+    pushDetails(index){
+      //console.log(this.stock[index].company)
+      this.$router.push({
+        name: 'Detail',
+        params: { company : this.stock[index].company, 
+                  open : this.stock[index].open,
+                  close : this.stock[index].close,
+                  high : this.stock[index].high,
+                  low : this.stock[index].low,
+                  volume : this.stock[index].volume
+        }
+      }
+      )
+    },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs;
     }
+
   }
 };
 </script>
