@@ -12,27 +12,27 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 // Vue.use(VueRouter)
 
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!store.getters.loggedIn) {
-      next({
-        name: 'Login'
-      })
-    } else {
-      next()
-    }
-  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
-    if (store.getters.loggedIn) {
-      next({
-        name: 'Main'
-      })
-    } else {
-      next()
-    }
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some(record => record.meta.requiresAuth)) {
+//     if (!store.getters.loggedIn) {
+//       next({
+//         name: 'Login'
+//       })
+//     } else {
+//       next()
+//     }
+//   } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+//     if (store.getters.loggedIn) {
+//       next({
+//         name: 'Main'
+//       })
+//     } else {
+//       next()
+//     }
+//   } else {
+//     next()
+//   }
+// })
 
 /* eslint-disable no-new */
 new Vue({
