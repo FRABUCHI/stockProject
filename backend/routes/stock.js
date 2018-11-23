@@ -2,15 +2,17 @@ var express = require('express');
 var router = express.Router();
 var User = require('../model/user');
 var StockList = require('../model/stockList');
+var Favorites = require('../model/favorites');
 
+
+//즐겨찾기 가져오기
 router.get('/favorites', function (req, res, next) {
     console.log('들어옴')
-    //let id = req.body.id
+    let userId = req.params.userId;
+    let id = 'syl'
+    console.log(userId)
     //관심 종목 데이터
-    User.findOne({
-        //id: id
-        id: 'syl'
-    }, (err, data) => {
+    User.findOne({id: id}, (err, data) => {
         if (err) res.status(500).send({
             error: 'database failure'
         });
@@ -18,11 +20,13 @@ router.get('/favorites', function (req, res, next) {
         if (!data) return res.status(404).json({
             error: 'data not found'
         });
+        console.log(data)
         console.log('Favorites: ' + data.favorites);
         res.json(data.favorites);
     })
 });
 
+//전체 종목 데이터 받기
 router.get('/all', function (req, res, next) {
     //전체 종목 데이터
     StockList.find(function (err, data) {
@@ -39,6 +43,7 @@ router.get('/all', function (req, res, next) {
     })
 })
 
+//한종목 데이터만 받기
 router.get('/:id', function (req, res, next) {
     let company = req.params.id
     //한 종목 데이터
@@ -57,20 +62,17 @@ router.get('/:id', function (req, res, next) {
     })
 })
 
+//즐겨찾기 추가
 router.post('/addFavorites', function (req, res, next) {
     let userId = req.body.userId;
-    let company = req.body.company;
+    let company = {
+        "company": req.body.company
+    };
     console.log(userId+' '+ company)
-    User.findOneAndUpdate({id: userId}, 
-        {
-            $push: {
-                favorites: {
-                    id: company
-                }
-        }
-        
-    });
-});
+
+
+    User.findOneAndUpdate({id: userId}, {$push: {favorites: company}})
+})
 
 
 

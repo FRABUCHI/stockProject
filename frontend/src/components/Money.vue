@@ -134,8 +134,28 @@ export default {
       recomandList: [],
       resultList:[]
     }
-  }
-  ,
+  },
+  created() {
+    //회사 정보 다 받아오기
+    this.$http.get('/api/stock/all')
+      .then((res) => {
+        console.log('Response Data: ' + res.data)
+        this.stockList = res.data
+        console.log("stock: " + this.stock)
+      }).catch((err) => [
+        console.log(err)
+      ]),
+
+    //예측가격 정보 다 받아오기
+    this.$http.get(`/api/money`)
+      .then(res => {
+        console.log(res.data);
+        this.stockUpList = res.data  
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
   methods: {
     runAnaliysis(){
       this.showList = [];
@@ -308,8 +328,7 @@ export default {
           this.testList[i] = tempdata[i];
         }
       }
-    },
-    
+    },    
     setShowList(){
       for(var i in this.recomandList){
         for(var j in this.stockList){
@@ -318,16 +337,6 @@ export default {
           }
         }
       }
-    },
-    getStockList(){ //페이지들어오자마자
-      this.$http.get('/api/stock')
-      .then((res) => {
-        console.log('Response Data: ' + res.data)
-        this.stock = res.data
-        console.log("stock: " + this.stock)
-      }).catch((err) => [
-        console.log(err)
-      ])
     },
     sortRecomandList(){
       var temp;
@@ -341,21 +350,6 @@ export default {
         }
       }
     },
-    getStockUpList() {//페이지 들어오자마자
-      this.$http.get('/api/money/up')
-      .then((res) => {
-        console.log('Response Data: ' + res.data)
-        this.stockUpList = res.data
-        console.log("stock: " + this.stockUpList)
-      }).catch((err) => [
-        console.log(err)
-      ])
-    },
-
-    findStock() {
-      //1개2개3개 나오는 추천 종목 stock배열에서 찾기
-    },
-
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
     },

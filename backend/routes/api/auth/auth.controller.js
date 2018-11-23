@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken')
 const User = require('../../../model/user')
 
 exports.register = (req, res) => {
-    console.log('SYSTEM: req.id = ' + req.body.id)
+    console.log('SYSTEM: req')
+    console.log(req.body)
     
     const {
         id,
@@ -10,8 +11,7 @@ exports.register = (req, res) => {
         password,
         email
     } = req.body
-    let newUser = null
-
+    
     // create a new user if does not exist
     const create = (user) => {
         if (user) {
@@ -52,7 +52,8 @@ exports.register = (req, res) => {
 }
 
 exports.login = (req, res) => {
- const {id, password} = req.body
+    const {id, password} = req.body
+    console.log(req.body)
     const secret = req.app.get('jwt-secret')
 
     // check the user info & generate the jwt
@@ -117,4 +118,9 @@ exports.check = (req, res) => {
         success: true,
         info: req.decoded
     })
+}
+
+exports.logout = (req, res) => {
+    console.log("User is logged out.")
+    res.send("SYSTEM: User is logged out.")
 }

@@ -2,12 +2,11 @@
     <div class="detail">
      <br><h1>Detail 페이지임니당~ㅎ</h1>
      <br><br>
-     <b-button @click="getStock">하이2</b-button>
      <b-alert show variant="primary"> 주식명: {{" " + company}}</b-alert> 
      <b-table striped hover
-         :items="stock"
-         :fields="detail_fields">
-    </b-table>
+              :items="stocks"
+              :fields="detail_fields">
+     </b-table>
     <br><br>
     <div style="width:800px; height:400px; border:1px solid red; float:left; margin-left:80px">
       <img src="@/assets/exgraph.png" align="center" style="margin-left: auto; margin-right: auto; display: block;"/>
@@ -35,52 +34,12 @@
  
 <script>
 export default {
-  created() {
-    //console.log(this.$route);
-    this.company = this.$route.params.company;
-    this.$http.get(`/api/stock/${this.company}`)
-      .then((res) => {
-        console.log(res.data)
-        //this.stock.open = res.data.open
-        //this.stock.close = res.data.close
-        //this.stock.high = res.data.high
-        //this.stock.low = res.data.low
-        //this.stock.volume = res.data.volume
-        this.stock = res.data
-        console.log(this.stock)
-      }).catch((err) => [
-        console.log(err)
-      ]),
-    this.$http.get(`/api/detail/${this.company}`)
-      .then(res => {
-        console.log(res.data);
-        this.stockUp = res.data
-
-        //오차수정작업
-        let error = this.stock.close - this.stockUp.present_price;
-        console.log(this.stock.close)
-        this.stockUp.present_price += error;
-        this.stockUp.predict_price += error;
-        console.log(error)
-        
-        console.log(this.stockUp.predict_price)
-        this.cost = this.stockUp.predict_price;
-        console.log(this.cost)
-        //cost.month = this.stockUp.predict_month
-        //cost.half_year = this.stockUp.predict_half_year
-        //cost.year = this.stockUp.predict_year
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  },
-
   name: "Detail",
   data() {
     return {
       detail_fields: ["company", "open", "close", "high", "low", "volume"],
       //field와 data type 맞춤(due to table)
-      stock: [],
+      stocks: [],
       stockUp: [],
       company: "", //db로부터 company 받아옴
       //cost: {
@@ -92,10 +51,41 @@ export default {
       cost: ''
     };
   },
-  methods: {
-    getStock() {
-      console.log(this.stock.open)
-    }
+  created() {
+    this.company = this.$route.params.company;
+    
+    //회사 정보
+    this.$http.get(`/api/stock/${this.company}`)
+      .then((res) => {
+        console.log(res.data)
+        this.stocks = res.data
+        console.log(this.stocks)
+      }).catch((err) => [
+        console.log(err)
+      ]),
+
+    //예측가격 정보
+    this.$http.get(`/api/detail/${this.company}`)
+      .then(res => {
+        console.log(res.data);
+        this.stockUp = res.data
+
+        //오차수정작업
+        let error = this.stock.close - this.stockUp.present_price;
+        this.stockUp.present_price += error;
+        this.stockUp.predict_price += error;
+        console.log(this.stock.close)
+        console.log(error)
+        
+        this.cost = this.stockUp.predict_price;
+        console.log(this.cost)
+        //cost.month = this.stockUp.predict_month
+        //cost.half_year = this.stockUp.predict_half_year
+        //cost.year = this.stockUp.predict_year
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 </script>
