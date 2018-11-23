@@ -1,7 +1,7 @@
 <template>
 <div id="signup">
   <h1>This is SignUp Page!!!</h1>
-  <b-form @submit="onSubmit" @reset="onReset">
+  <b-form @submit.prevent="signUp" @reset="onReset">
     <b-form-group id="id"
                   label="ID:"
                   label-for="input1">
@@ -58,43 +58,36 @@ export default {
         name: "",
         email: null
       }
-    };
+    }
   },
   methods: {
-    onSubmit(event) {
-      event.preventDefault();
+    signUp(evt) {
+      evt.preventDefault();
       alert(JSON.stringify(this.user));
-      this.$http
-        .post("/api/signup", {
-          user: this.user
-        })
+
+      this.$store.dispatch('signup', {
+        id: this.user.id,
+        name: this.user.name,
+        email: this.user.email,
+        password: this.user.password,
+      })
         .then(res => {
-          if (res.data.result === 0) {
-            alert("다시 시도해주세요.");
-          }
-          if (res.data.result === 1) {
-            alert("회원가입 되었습니다.");
-            this.$router.push("/login");
-          }
+          this.$router.push({ name: 'login' })
         })
-        .catch(err => {
-          console.log(err);
-          alert("오류가 났습니다.");
-        });
     },
     onReset(evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       /* Reset our form values */
-      this.user.email = "";
-      this.user.name = "";
-      this.user.password = "";
-      this.user.id = "";
+      this.user.email = ''
+      this.user.name = ''
+      this.user.password = ''
+      this.user.id = ''
       /* Trick to reset/clear native browser form validation state */
-      this.show = false;
+      this.show = false
       this.$nextTick(() => {
-        this.show = true;
-      });
+        this.show = true
+      })
     }
   }
-};
+}
 </script>

@@ -13,15 +13,15 @@
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
         <b-tabs>
-            <b-tab title="관심종목" active>
+            <b-tab title="관심종목" v-on:click="getFavoritesList" active>
               <b-table striped hover
                        :items="favorites"
                        :fields="favorites_fields"
                        :current-page="currentPage"
                        :per-page="perPage">
-                        <template slot="상세보기" slot-scope="row">
-                         <b-button size="sm" v-on:click="'/detail/:stockId'" 
-                                   variant="info" class="mr-2">
+                        <template slot="detail" slot-scope="row">
+                         <b-button size="sm" variant="info" class="mr-2"
+                                   @click="pushDetails(row.index)">
                               보기
                          </b-button>
                         </template>
@@ -32,15 +32,16 @@
                          :items="stock"
                          :fields="stock_fields"
                          :current-page="currentPage"
-                         :per-page="perPage">
+                         :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
-                           <b-button size="sm" v-on:click="'detail/:stockId'" 
-                                     class="mr-2" variant="info">
+                           <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
+                                     @click="pushDetails(row.index)">
                                 보기
                            </b-button>
                           </template>
                           <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="mr-2" @click="showAlert" variant="info">
+                           <b-button size="sm" class="mr-2" variant="info" 
+                                      @click="pushFavorites(row.index)">
                                 추가
                            </b-button>
                           </template>
@@ -55,9 +56,7 @@
          </b-row>
     </div>
 </template>
-
 <script>
-
 export default {
   name: "App",
   data() {
@@ -70,39 +69,62 @@ export default {
       stockRows: 0,
       totalRows: 0,
       currentPage: 1,
-      perPage: 3,
+      perPage: 7,
       dismissSecs: 1,
-      dismissCountDown: 0
+      dismissCountDown: 0,
+      id:  'syl'
     };
   },
   methods: {
     getStockList() {
+      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
         this.stock = res.data
         this.stockRows = this.stock.length
-        this.totalRows = this.stock.length
+        this.totalRows = this.stock.length 
         console.log("stock: " + this.stock)
       }).catch((err) => [
         console.log(err)
       ])
     },
     getFavoritesList() {
-      this.$http.get('/api/stock/:userId')
+      this.favorites = []
+      this.favoritesRows = 0
+      this.totalRows = 0
+      this.$http.get('/api/stock/favorites', {
+        id: this.id//유저아이디
+      })
       .then((res) => {
-        console.log('Response Data: ' + res.data)
-        this.favorites = res.data
-        this.favoritesRows = this.favorites.length
-        this.totalRows = this.favorites.length
-        console.log("stock: " + this.stock)
+        res.data.map((item)=>{
+          for(var i = 0; i < item.id.length; i++){
+            let name = item.id[i]
+            let num = -1
+            console.log('Response Data: ' + name)
+            for(var j = 0; j < 4; j++){
+              num = this.stock[j].company.indexOf(name)
+              if (num != -1) {
+                console.log(j); 
+                this.favorites.push(this.stock[ j ])
+                break;
+              }
+            }
+            this.favoritesRows = this.favorites.length
+            this.totalRows = this.favorites.length
+          }
+        })
       }).catch((err) => [
         console.log(err)
       ])
     },
-    addFavorites() {
+    pushFavorites(index) {
+      this.dismissCountDown = this.dismissSecs;
+      console.log(this.stock[index].company)
+      let company = this.stock[index].company
       this.$http.post('/api/stock/addFavorites', {
-        id: this.stock.id
+        userId: 'syl',
+        company: company
       })
       .then((res) => {
         console.log(res.status)
@@ -110,12 +132,25 @@ export default {
         console.log(err)
       ])
     },
+    //동적라우팅
+    pushDetails(index){
+      //console.log(this.stock[index].company)
+      this.$router.push({
+        name: 'Detail',
+        params: { company : this.stock[index].company, 
+                  open : this.stock[index].open,
+                  close : this.stock[index].close,
+                  high : this.stock[index].high,
+                  low : this.stock[index].low,
+                  volume : this.stock[index].volume
+        }
+      }
+      )
+    },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs;
     }
+
   }
 };
 </script>

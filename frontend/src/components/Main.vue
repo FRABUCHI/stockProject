@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <h1>This is Main Page!!</h1>
-  
+
     <b-container class="load-page">
       <b-row align-h="around">
           <b-col cols="4">
@@ -22,8 +22,8 @@
           </b-col>
       </b-row>
     </b-container>
-  
-  
+
+
   </div>
 </template>
 

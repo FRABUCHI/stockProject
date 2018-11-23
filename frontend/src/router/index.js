@@ -3,16 +3,15 @@ import Router from 'vue-router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import Vuex from 'vuex'
 
 import Main from '@/components/Main'
 import Login from '@/components/Login'
+import Logout from '@/components/Logout'
 import SignUp from '@/components/SignUp'
 import Stock from '@/components/Stock'
 import Money from '@/components/Money'
 import Detail from '@/components/Detail'
 
-Vue.use(Vuex)
 Vue.use(Router)
 Vue.use(BootstrapVue)
 
@@ -27,27 +26,47 @@ let router = new Router({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        requiresVisitor: true
+      }
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      component: Logout
     },
     {
       path: '/signup',
       name: 'SignUp',
-      component: SignUp
+      component: SignUp,
+      meta: {
+        requiresVisitor: true
+      }
     },
     {
       path: '/stock',
       name: 'Stock',
-      component: Stock
+      component: Stock,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/money',
       name: 'Money',
-      component: Money
+      component: Money,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
-      path: '/detail',
+      path: '/detail/:company',
       name: 'Detail',
-      component: Detail
+      component: Detail,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
