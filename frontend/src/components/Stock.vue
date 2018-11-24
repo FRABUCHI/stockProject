@@ -57,6 +57,8 @@
     </div>
 </template>
 <script>
+import { store } from '../store/store'
+
 export default {
   name: "App",
   data() {
@@ -72,7 +74,7 @@ export default {
       perPage: 7,
       dismissSecs: 1,
       dismissCountDown: 0,
-      id:  'syl'
+      id: store.getters.id
     };
   },
   methods: {
@@ -93,17 +95,19 @@ export default {
       this.favoritesRows = 0
       this.totalRows = 0
       this.$http.get('/api/stock/favorites', {
-        id: this.id//유저아이디
+        params: {userId: this.id}
       })
       .then((res) => {
         res.data.map((item)=>{
+          console.log(item)
           for(var i = 0; i < item.id.length; i++){
             let name = item.id[i]
             let num = -1
             console.log('Response Data: ' + name)
-            for(var j = 0; j < 4; j++){
+            for(var j = 0; j < this.stock.length; j++){
+              //즐겨찾는 회사 index찾기
               num = this.stock[j].company.indexOf(name)
-              if (num != -1) {
+              if (num != -1) {//있으면 favorites배열에 회사 정보 넣기
                 console.log(j); 
                 this.favorites.push(this.stock[ j ])
                 break;
@@ -118,11 +122,14 @@ export default {
       ])
     },
     pushFavorites(index) {
+      //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-      console.log(this.stock[index].company)
+      
       let company = this.stock[index].company
+      console.log(company)
+
       this.$http.post('/api/stock/addFavorites', {
-        userId: 'syl',
+        userId: this.id,
         company: company
       })
       .then((res) => {

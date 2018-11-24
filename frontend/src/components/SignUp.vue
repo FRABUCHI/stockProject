@@ -73,7 +73,7 @@ export default {
       })
         .then(res => {
           console.log(res.status)
-          this.$router.push({ name: 'login' })
+          this.$router.push({ name: 'Login' })
         })
     },
     onReset(evt) {

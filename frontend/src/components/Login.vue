@@ -41,15 +41,13 @@ export default {
   },
   methods: {
     login(event) {
-      event.preventDefault();
-      alert(JSON.stringify(this.form));
 
       this.$store.dispatch('retrieveToken', {
-        id: this.id,
-        password: this.password,
+        id: this.user.id,
+        password: this.user.password,
       })
       .then(res => {
-        this.$router.push({ name: 'Main' })
+        this.$router.push({name: 'Main'})
       })
     },
     onReset (evt) {

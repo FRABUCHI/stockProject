@@ -10,8 +10,7 @@ import { store } from './store/store'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-// Vue.use(VueRouter)
-/*
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!store.getters.loggedIn) {
@@ -33,7 +32,7 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-*/
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

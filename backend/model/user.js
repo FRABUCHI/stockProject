@@ -17,8 +17,7 @@ const User = new Schema({
         default: false
     }, 
     favorites: [{
-        type: Object,
-        addedDate: Date,
+        company: String
     }]
 })
 
@@ -60,10 +59,5 @@ User.methods.verify = function (password) {
     
     return this.password === encrypted
 }
-
-//User.methods.assignAdmin = function () {
-//    this.admin = true
-//    return this.save()
-//}
 
 module.exports = mongoose.model('User', User, 'userList')

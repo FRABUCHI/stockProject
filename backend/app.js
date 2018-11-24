@@ -10,8 +10,6 @@ const config = require('./config')
 mongoose.Promise = global.Promise;
 
 var main = require('./routes/main');
-var login = require('./routes/login');
-var signup = require('./routes/signup');
 var stock = require('./routes/stock');
 var money = require('./routes/money');
 var detail = require('./routes/detail');
