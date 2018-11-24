@@ -1,6 +1,7 @@
 <template>
     <div class='Stock'>
-      <h1>종목 추천</h1><br><br>
+      <h1>종목 추천</h1>
+      <hr align="center" style="border: solid 0.5px black; width: 90%;"><br>
         <input class='searchbar' type="text" v-on:input="search = $event.target.value"  placeholder="  주식명 입력"/>
         <b-alert :show="dismissCountDown"
              dismissible
@@ -9,8 +10,9 @@
              @dismiss-count-down="countDownChanged">
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
+        <div class="test">
         <b-tabs>
-            <b-tab title="관심 종목" border=true v-on:click="getFavoritesList" active>
+            <b-tab title="관심 종목" v-on:click="getFavoritesList" active>
             <div class="tables">
              <b-table striped hover stcked="md"
                       :items="favorFilteredList"
@@ -33,7 +35,7 @@
              </div>
             </b-tab>
 
-            <b-tab title="전체 종목" border=true v-on:click="getStockList" active>
+            <b-tab title="전체 종목" v-on:click="getStockList" active>
               <div class="tables">
                 <b-table striped hover
                          :items="stockFilteredList"
@@ -55,8 +57,8 @@
                 </b-table>
               </div>
             </b-tab>
-
         </b-tabs> 
+        </div>
          <b-row class="paging">
             <b-col md="6" class="page">
              <b-pagination list-style="color: black"
@@ -205,21 +207,23 @@ export default {
 </script>
 
 <style>
-.paging{
-  padding-left:550px;
-  padding-right:550px;
-  padding-top:15px;
-}
 .Stock{
   min-height:100%;
   padding:250px;
-  padding-right:300px;
+  margin-left:auto;
+  margin-right:auto;
   padding-top:75px;
   text-align: center;
 }
+.paging{
+  padding-left:475px;
+  padding-right:500px;
+  padding-top:15px;
+}
 .searchbar{
-  width: 400px; 
-  height :40px;
+  width: 380px; 
+  height :38px;
+  padding: 0px;
   border-width: 1px;
   border-color :lightgrey;
 }
