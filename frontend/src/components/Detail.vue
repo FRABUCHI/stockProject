@@ -1,32 +1,31 @@
 <template>
     <div class="detail">
-     <br><h1>Detail 페이지임니당~ㅎ</h1>
+      <h1>   상세보기: {{"  "+company}}</h1>
      <br><br>
-     <div class="table">
-     <b-alert show variant="primary"> 주식명: {{" " + company}}</b-alert> 
+     <div class="table"> 
      <b-table striped hover
               :fields="detail_fields"
               :items="stock">
      </b-table>
      </div>
     <br><br>
-    <div style="width:800px; height:400px; border:1px solid red; float:left; margin-left:80px">
+    <div style="width:500px; height:250px; border:1px solid red; float:left; margin-left:80px">
       <img src="@/assets/exgraph.png" align="center" style="margin-left: auto; margin-right: auto; display: block;"/>
     </div>
-    <div style="width:800px;height:400px; float:right; margin-right:80px">
+    <div style="width:500px;height:250px; float:right; margin-right:80px">
       <b-list-group>
         <br>
        <b-list-group-item class="d-flex justify-content-between align-items-center">
-         <strong>1일 후 >>>>>>>> {{" "+stockUp.predict_price+ " 원"}}</strong> 
+         <strong> 1일 후 : {{" "+stockUp.predict_price+ " 원"}}</strong> 
        </b-list-group-item><br>
        <b-list-group-item class="d-flex justify-content-between align-items-center">
-         <strong>한달 후 >>>>>>>> {{" "+cost.month + " 원"}}</strong>
+         <strong> 한달 후 : {{" "+cost.month + " 원"}}</strong>
        </b-list-group-item><br>
        <b-list-group-item class="d-flex justify-content-between align-items-center">
-         <strong>6개월 후 >>>>>>>> {{" "+cost.half_year + " 원"}}</strong>
+         <strong> 6개월 후 : {{" "+cost.half_year + " 원"}}</strong>
        </b-list-group-item><br>
        <b-list-group-item class="d-flex justify-content-between align-items-center">
-         <strong>1년 후 >>>>>>>> {{" "+cost.year + " 원"}}</strong>
+         <strong> 1년 후 : {{" "+cost.year + " 원"}}</strong>
        </b-list-group-item>
      </b-list-group>
     </div>
@@ -100,5 +99,16 @@ export default {
   width:80%;
   border-color:black;
   text-align: center;
+}
+.detail{
+  padding:250px;
+  padding-right:300px;
+  padding-top:75px;
+  text-align: center;
+  min-height:100%;
+}
+.table{
+  margin-left:auto;
+  margin-right:auto;
 }
 </style>
