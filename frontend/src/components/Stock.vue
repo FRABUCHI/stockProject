@@ -1,10 +1,18 @@
 <template>
-    <div class='Stock'>
-      <h1>여긴 Stock 페이지입니당~~</h1>
-        <b-nav-form>
-           <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
-           <b-button size="sm" class="my-2 my-sm-0" type="submit">검색</b-button>
-        </b-nav-form>
+    <div class='stock'>
+      <h1>종목 추천</h1><br><br>
+    <b-row>
+      <b-col md="6" class="my-1">
+        <b-form-group class="mb-0">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
         <b-alert :show="dismissCountDown"
              dismissible
              variant="warning"
@@ -14,11 +22,13 @@
         </b-alert>
         <b-tabs>
             <b-tab title="관심종목" v-on:click="getFavoritesList" active>
-              <b-table striped hover
+              <b-table striped hover stcked="md"
                        :items="favorites"
                        :fields="favorites_fields"
                        :current-page="currentPage"
-                       :per-page="perPage">
+                       :per-page="perPage"
+                       :filter="filter"
+                       @filtered="onFiltered">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
                                    @click="pushDetails(row.index)">
@@ -47,10 +57,9 @@
                           </template>
                 </b-table>
             </b-tab>
-        </b-tabs>
-
-         <b-row>
-            <b-col md="6" class="my-1">
+        </b-tabs> 
+         <b-row class="paging">
+            <b-col md="6" class="page">
              <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
             </b-col>
          </b-row>
@@ -62,7 +71,9 @@ export default {
   data() {
     return {
       favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail"],
-      stock_fields: ["company", "open", "close", "high", "low", "volume", "detail", "favorites"],
+      stock_fields: [
+        "company", "open", "close", "high", "low", "volume", "detail", "favorites"
+      ],
       favorites: [],
       stock: [],
       favoritesRows: 0,
@@ -72,11 +83,13 @@ export default {
       perPage: 7,
       dismissSecs: 1,
       dismissCountDown: 0,
-      id:  'syl'
+      id:  'hj',
+      filter: null,
     };
   },
   methods: {
     getStockList() {
+      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
@@ -148,8 +161,26 @@ export default {
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
+    },
+    onFiltered (filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
     }
-
   }
 };
 </script>
+
+<style>
+.paging{
+  padding-left:530px;
+  padding-right:600px;
+  padding-top:15px;
+}
+.stock{
+  padding:250px;
+  padding-right:300px;
+  padding-top:75px;
+  text-align: center;
+}
+</style>
