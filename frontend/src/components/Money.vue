@@ -1,7 +1,6 @@
 <template>
   <div class="Money">
     <h2 style="text-align:center;height:60px">주식 추천</h2>
-
     <b-container class="bv-example-row">
       <b-row>
           <b-col cols>

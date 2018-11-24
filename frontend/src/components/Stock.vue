@@ -1,9 +1,7 @@
 <template>
     <div class='Stock'>
-      <h1>여긴 Stock 페이지입니당~~</h1>
-        
-        <input type="text" v-on:input="search = $event.target.value"  placeholder="검색"/>
-        
+      <h1>종목 추천</h1><br><br>
+        <input class='searchbar' type="text" v-on:input="search = $event.target.value"  placeholder="  주식명 입력"/>
         <b-alert :show="dismissCountDown"
              dismissible
              variant="warning"
@@ -12,53 +10,57 @@
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
         <b-tabs>
-
-            <b-tab title="관심종목" v-on:click="getFavoritesList" active>
-              <b-table striped hover stcked="md"
-                       :items="favorFilteredList"
-                       :fields="favorites_fields"
-                       :current-page="currentPage"
-                       :per-page="perPage">
-                        <template slot="detail" slot-scope="row">
-                         <b-button size="sm" variant="info" class="mr-2"
-                                   @click="pushDetails(favorFilteredList[row.index].company)">
-                              보기
-                         </b-button>
-                        </template>
-                        <template slot="delete" slot-scope="row"> 
-                           <b-button size="sm" class="mr-2" variant="info" 
-                                      @click="deleteFavorites(favorFilteredList[row.index].company)">
-                                삭제
-                           </b-button>
-                        </template>
-              </b-table>
+            <b-tab title="관심 종목" border=true v-on:click="getFavoritesList" active>
+            <div class="tables">
+             <b-table striped hover stcked="md"
+                      :items="favorFilteredList"
+                      :fields="favorites_fields"
+                      :current-page="currentPage"
+                      :per-page="perPage">
+                       <template slot="detail" slot-scope="row">
+                        <b-button size="sm" class="btn1"
+                                  @click="pushDetails(favorFilteredList[row.index].company)">
+                             보기
+                        </b-button>
+                       </template>
+                       <template slot="delete" slot-scope="row"> 
+                          <b-button size="sm" class="btn1"  
+                                     @click="deleteFavorites(favorFilteredList[row.index].company)">
+                               삭제
+                          </b-button>
+                       </template>
+             </b-table>
+             </div>
             </b-tab>
 
-            <b-tab title="전체종목" v-on:click="getStockList" active>
+            <b-tab title="전체 종목" border=true v-on:click="getStockList" active>
+              <div class="tables">
                 <b-table striped hover
                          :items="stockFilteredList"
                          :fields="stock_fields"
                          :current-page="currentPage"
                          :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
-                           <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
+                           <b-button size="sm" v-on:click="'#'" class="btn1" variant="info"
                                      @click="pushDetails(stockFilteredList[row.index].company)">
                                 보기
                            </b-button>
                           </template>
                           <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="mr-2" variant="info" 
+                           <b-button size="sm" class="btn1" variant="info" 
                                       @click="pushFavorites(stockFilteredList[row.index].company)">
                                 추가
                            </b-button>
                           </template>
                 </b-table>
+              </div>
             </b-tab>
 
         </b-tabs> 
          <b-row class="paging">
             <b-col md="6" class="page">
-             <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+             <b-pagination list-style="color: black"
+               :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
             </b-col>
          </b-row>
     </div>
@@ -78,7 +80,7 @@ export default {
       stockRows: 0,
       totalRows: 0,
       currentPage: 1,
-      perPage: 7,
+      perPage: 9,
       dismissSecs: 1,
       dismissCountDown: 0,
       id: store.getters.id,
@@ -204,14 +206,24 @@ export default {
 
 <style>
 .paging{
-  padding-left:530px;
-  padding-right:600px;
+  padding-left:550px;
+  padding-right:550px;
   padding-top:15px;
 }
-.stock{
+.Stock{
+  min-height:100%;
   padding:250px;
   padding-right:300px;
   padding-top:75px;
   text-align: center;
+}
+.searchbar{
+  width: 400px; 
+  height :40px;
+  border-width: 1px;
+  border-color :lightgrey;
+}
+.btn1{
+  background-color: black;
 }
 </style>
