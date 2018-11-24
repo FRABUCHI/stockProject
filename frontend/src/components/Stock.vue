@@ -21,13 +21,13 @@
                        :per-page="perPage">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
-                                   @click="pushDetails(row.index)">
+                                   @click="pushDetails(favorFilteredList[row.index].company)">
                               보기
                          </b-button>
                         </template>
                         <template slot="delete" slot-scope="row"> 
                            <b-button size="sm" class="mr-2" variant="info" 
-                                      @click="deleteFavorites(row.index)">
+                                      @click="deleteFavorites(favorFilteredList[row.index].company)">
                                 삭제
                            </b-button>
                         </template>
@@ -42,13 +42,13 @@
                          :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
-                                     @click="pushDetails(row.index)">
+                                     @click="pushDetails(stockFilteredList[row.index].company)">
                                 보기
                            </b-button>
                           </template>
                           <template slot="favorites" slot-scope="row"> 
                            <b-button size="sm" class="mr-2" variant="info" 
-                                      @click="pushFavorites(row.index)">
+                                      @click="pushFavorites(stockFilteredList[row.index].company)">
                                 추가
                            </b-button>
                           </template>
@@ -126,8 +126,7 @@ export default {
         console.log(err)
       ])
     },
-    deleteFavorites(index){
-      let company = this.stock[index].company
+    deleteFavorites(company){
       console.log(company)
 
       this.$http.post('/api/stock/deleteFavorites', {
@@ -136,15 +135,15 @@ export default {
       })
       .then((res) => {
         console.log(res.status)
+        this.getFavoritesList()
       }).catch((err) => [
         console.log(err)
       ])
     },
-    pushFavorites(index) {
+    pushFavorites(company) {
       //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-      
-      let company = this.stock[index].company
+  
       console.log(company)
 
       this.$http.post('/api/stock/addFavorites', {
@@ -158,16 +157,12 @@ export default {
       ])
     },
     //동적라우팅
-    pushDetails(index){
+    pushDetails(company){
       //console.log(this.stock[index].company)
       this.$router.push({
         name: 'Detail',
-        params: { company : this.stock[index].company, 
-                  open : this.stock[index].open,
-                  close : this.stock[index].close,
-                  high : this.stock[index].high,
-                  low : this.stock[index].low,
-                  volume : this.stock[index].volume
+        params: {
+          company: company 
         }
       }
       )
@@ -179,10 +174,10 @@ export default {
   computed: {
     stockFilteredList: function() {
       return this.stock.filter(item => {
-        console.log('필터들어옴')
-        console.log(item.company)
+        //console.log('필터들어옴')
+        //console.log(item.company)
         if( item.company.includes(this.search) ){
-          console.log(this.search)
+          //console.log(this.search)
           console.log(item.company.includes(this.search))
           return {
             company: item.company.includes(this.search)
@@ -192,10 +187,10 @@ export default {
     },
     favorFilteredList: function() {
       return this.favorites.filter(item => {
-        console.log('필터들어옴')
-        console.log(item.company)
+        //console.log('필터들어옴')
+        //console.log(item.company)
         if( item.company.includes(this.search) ){
-          console.log(this.search)
+          //console.log(this.search)
           console.log(item.company.includes(this.search))
           return {
             company: item.company.includes(this.search)
