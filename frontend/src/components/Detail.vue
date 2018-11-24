@@ -39,9 +39,9 @@ export default {
   name: "Detail",
   data() {
     return {
-      detail_fields: ["company", "open", "close", "high", "low", "volume"],
+      detail_fields: ["open", "close", "high", "low", "volume"],
       //field와 data type 맞춤(due to table)
-      stocks: [],
+      stock: [{open: '', close: '', high: '', low: '', volume: ''}],
       stockUp: [],
       company: "", //db로부터 company 받아옴
       //cost: {

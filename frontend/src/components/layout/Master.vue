@@ -28,6 +28,7 @@
 
       </b-collapse>
     </b-navbar>
+    
     <router-view/>
 
     <section class= "footer">

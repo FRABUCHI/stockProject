@@ -2,10 +2,8 @@
     <div class='Stock'>
       <h1>여긴 Stock 페이지입니당~~</h1>
         
-        <b-nav-form>
-           <b-form-input v-on:input="search = $event.target.value" class="mr-sm-2" type="text" placeholder="검색"/>
-        </b-nav-form>
-
+        <input type="text" v-on:input="search = $event.target.value"  placeholder="검색"/>
+        
         <b-alert :show="dismissCountDown"
              dismissible
              variant="warning"
@@ -14,17 +12,16 @@
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
         <b-tabs>
+
             <b-tab title="관심종목" v-on:click="getFavoritesList" active>
               <b-table striped hover stcked="md"
-                       :items="favorites"
+                       :items="favorFilteredList"
                        :fields="favorites_fields"
                        :current-page="currentPage"
-                       :per-page="perPage"
-                       :filter="filter"
-                       @filtered="onFiltered">
+                       :per-page="perPage">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
-                                   @click="pushDetails()">
+                                   @click="pushDetails(row.index)">
                               보기
                          </b-button>
                         </template>
@@ -36,15 +33,16 @@
                         </template>
               </b-table>
             </b-tab>
+
             <b-tab title="전체종목" v-on:click="getStockList" active>
                 <b-table striped hover
-                         :items="stock"
+                         :items="stockFilteredList"
                          :fields="stock_fields"
                          :current-page="currentPage"
                          :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
-                                     @click="pushDetails()">
+                                     @click="pushDetails(row.index)">
                                 보기
                            </b-button>
                           </template>
@@ -56,6 +54,7 @@
                           </template>
                 </b-table>
             </b-tab>
+
         </b-tabs> 
          <b-row class="paging">
             <b-col md="6" class="page">
@@ -82,12 +81,12 @@ export default {
       perPage: 7,
       dismissSecs: 1,
       dismissCountDown: 0,
-      id: store.getters.id
+      id: store.getters.id,
+      search: ""
     };
   },
   methods: {
     getStockList() {
-      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
@@ -175,11 +174,34 @@ export default {
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
+    }
+  },
+  computed: {
+    stockFilteredList: function() {
+      return this.stock.filter(item => {
+        console.log('필터들어옴')
+        console.log(item.company)
+        if( item.company.includes(this.search) ){
+          console.log(this.search)
+          console.log(item.company.includes(this.search))
+          return {
+            company: item.company.includes(this.search)
+          }
+        }
+      });
     },
-    onFiltered (filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.totalRows = filteredItems.length
-      this.currentPage = 1
+    favorFilteredList: function() {
+      return this.favorites.filter(item => {
+        console.log('필터들어옴')
+        console.log(item.company)
+        if( item.company.includes(this.search) ){
+          console.log(this.search)
+          console.log(item.company.includes(this.search))
+          return {
+            company: item.company.includes(this.search)
+          }
+        }
+      });
     }
   }
 };
