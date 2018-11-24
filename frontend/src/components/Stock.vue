@@ -15,11 +15,13 @@
         </b-alert>
         <b-tabs>
             <b-tab title="관심종목" v-on:click="getFavoritesList" active>
-              <b-table striped hover
+              <b-table striped hover stcked="md"
                        :items="favorites"
                        :fields="favorites_fields"
                        :current-page="currentPage"
-                       :per-page="perPage">
+                       :per-page="perPage"
+                       :filter="filter"
+                       @filtered="onFiltered">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
                                    @click="pushDetails()">
@@ -54,10 +56,9 @@
                           </template>
                 </b-table>
             </b-tab>
-        </b-tabs>
-
-         <b-row>
-            <b-col md="6" class="my-1">
+        </b-tabs> 
+         <b-row class="paging">
+            <b-col md="6" class="page">
              <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
             </b-col>
          </b-row>
@@ -86,6 +87,7 @@ export default {
   },
   methods: {
     getStockList() {
+      console.log('겟스톡리스트')
       this.$http.get('/api/stock/all')
       .then((res) => {
         console.log('Response Data: ' + res.data)
@@ -173,8 +175,26 @@ export default {
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
+    },
+    onFiltered (filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
     }
-
   }
 };
 </script>
+
+<style>
+.paging{
+  padding-left:530px;
+  padding-right:600px;
+  padding-top:15px;
+}
+.stock{
+  padding:250px;
+  padding-right:300px;
+  padding-top:75px;
+  text-align: center;
+}
+</style>

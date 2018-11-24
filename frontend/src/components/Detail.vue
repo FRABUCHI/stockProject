@@ -2,16 +2,18 @@
     <div class="detail">
      <br><h1>Detail 페이지임니당~ㅎ</h1>
      <br><br>
+     <div class="table">
      <b-alert show variant="primary"> 주식명: {{" " + company}}</b-alert> 
      <b-table striped hover
-              :items="stocks"
-              :fields="detail_fields">
+              :fields="detail_fields"
+              :items="stock">
      </b-table>
+     </div>
     <br><br>
     <div style="width:800px; height:400px; border:1px solid red; float:left; margin-left:80px">
       <img src="@/assets/exgraph.png" align="center" style="margin-left: auto; margin-right: auto; display: block;"/>
     </div>
-    <div style="width:800px;height:400px; border:1px solid green; float:right; margin-right:80px">
+    <div style="width:800px;height:400px; float:right; margin-right:80px">
       <b-list-group>
         <br>
        <b-list-group-item class="d-flex justify-content-between align-items-center">
@@ -58,16 +60,20 @@ export default {
     this.$http.get(`/api/stock/${this.company}`)
       .then((res) => {
         console.log(res.data)
-        this.stocks = res.data
-        console.log(this.stocks)
+        //this.stock = res.data
+        console.log(this.stock)
+        this.stock[0].open = res.data.open
+        this.stock[0].close = res.data.close
+        this.stock[0].high = res.data.high
+        this.stock[0].low = res.data.low
+        this.stock[0].volume = res.data.volume
       }).catch((err) => [
         console.log(err)
-      ]),
+      ])
 
-    //예측가격 정보
     this.$http.get(`/api/detail/${this.company}`)
       .then(res => {
-        console.log(res.data);
+        //console.log(res.data);
         this.stockUp = res.data
 
         //오차수정작업
@@ -86,18 +92,15 @@ export default {
       .catch(err => {
         console.log(err);
       });
-  }
+  },
+
 }
 </script>
 
-<style scoped>
-.aligncenter {
+<style >
+.table{
+  width:80%;
+  border-color:black;
   text-align: center;
-}
-.alignleft {
-  text-align: left;
-}
-.alignright {
-  text-align: right;
 }
 </style>
