@@ -6,13 +6,11 @@ var Favorites = require('../model/favorites');
 
 
 //즐겨찾기 가져오기
-router.get('/favorites', function (req, res, next) {
-    console.log('들어옴')
-    let userId = req.params.userId;
-    let id = 'syl'
+router.post('/favorites', function (req, res, next) {
+    let userId = req.body.userId;
     console.log(userId)
     //관심 종목 데이터
-    User.findOne({id: id}, (err, data) => {
+    User.findOne({id: userId}, (err, data) => {
         if (err) res.status(500).send({
             error: 'database failure'
         });
@@ -20,7 +18,6 @@ router.get('/favorites', function (req, res, next) {
         if (!data) return res.status(404).json({
             error: 'data not found'
         });
-        console.log(data)
         console.log('Favorites: ' + data.favorites);
         res.json(data.favorites);
     })
@@ -68,11 +65,36 @@ router.post('/addFavorites', function (req, res, next) {
     let company = {
         "company": req.body.company
     };
-    console.log(userId+' '+ company)
-
-
-    User.findOneAndUpdate({id: userId}, {$push: {favorites: company}})
+    console.log(userId + ' ' + req.body.company)
+    
+    User.findOne({id: userId}, {$push: {favorites: company}})
+    .exec((err, data)=>{
+        console.log(data.favorites)
+        res.json(data.favorites)
+    })
 })
+
+//즐겨찾기 삭제
+router.post('/deleteFavorites', function (req, res, next) {
+    let userId = req.body.userId;
+    let company = {
+        "company": req.body.company
+    };
+    console.log(req.body.company)
+    console.log(userId + ' ' + company)
+
+    User.findOneAndUpdate({
+            id: userId
+        }, {
+            $pull: {
+                favorites: company
+            }
+        })
+        .exec((err, data) => {
+            res.json(data)
+        })
+})
+
 
 
 

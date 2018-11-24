@@ -1,10 +1,11 @@
 <template>
     <div class='Stock'>
       <h1>여긴 Stock 페이지입니당~~</h1>
+        
         <b-nav-form>
-           <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
-           <b-button size="sm" class="my-2 my-sm-0" type="submit">검색</b-button>
+           <b-form-input v-on:input="search = $event.target.value" class="mr-sm-2" type="text" placeholder="검색"/>
         </b-nav-form>
+
         <b-alert :show="dismissCountDown"
              dismissible
              variant="warning"
@@ -21,9 +22,15 @@
                        :per-page="perPage">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
-                                   @click="pushDetails(row.index)">
+                                   @click="pushDetails()">
                               보기
                          </b-button>
+                        </template>
+                        <template slot="delete" slot-scope="row"> 
+                           <b-button size="sm" class="mr-2" variant="info" 
+                                      @click="deleteFavorites(row.index)">
+                                삭제
+                           </b-button>
                         </template>
               </b-table>
             </b-tab>
@@ -35,7 +42,7 @@
                          :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
-                                     @click="pushDetails(row.index)">
+                                     @click="pushDetails()">
                                 보기
                            </b-button>
                           </template>
@@ -63,7 +70,7 @@ export default {
   name: "App",
   data() {
     return {
-      favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail"],
+      favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail", "delete"],
       stock_fields: ["company", "open", "close", "high", "low", "volume", "detail", "favorites"],
       favorites: [],
       stock: [],
@@ -94,14 +101,12 @@ export default {
       this.favorites = []
       this.favoritesRows = 0
       this.totalRows = 0
-      this.$http.get('/api/stock/favorites', {
-        params: {userId: this.id}
+      this.$http.post('/api/stock/favorites', {
+        userId: this.id
       })
       .then((res) => {
-        res.data.map((item)=>{
-          console.log(item)
-          for(var i = 0; i < item.id.length; i++){
-            let name = item.id[i]
+        for(var i = 0; i < res.data.length; i++){
+            let name = res.data[i].company
             let num = -1
             console.log('Response Data: ' + name)
             for(var j = 0; j < this.stock.length; j++){
@@ -116,7 +121,20 @@ export default {
             this.favoritesRows = this.favorites.length
             this.totalRows = this.favorites.length
           }
-        })
+        }).catch((err) => [
+        console.log(err)
+      ])
+    },
+    deleteFavorites(index){
+      let company = this.stock[index].company
+      console.log(company)
+
+      this.$http.post('/api/stock/deleteFavorites', {
+        userId: this.id,
+        company: company
+      })
+      .then((res) => {
+        console.log(res.status)
       }).catch((err) => [
         console.log(err)
       ])
