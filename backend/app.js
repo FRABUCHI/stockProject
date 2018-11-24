@@ -10,8 +10,6 @@ const config = require('./config')
 mongoose.Promise = global.Promise;
 
 var main = require('./routes/main');
-var login = require('./routes/login');
-var signup = require('./routes/signup');
 var stock = require('./routes/stock');
 var money = require('./routes/money');
 var detail = require('./routes/detail');
@@ -42,7 +40,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('dev'))
 
 app.use('/', main);
-app.use('/api/login', login);
 app.use('/api', require('./routes/api'));
 app.use('/api/stock', stock);
 app.use('/api/money', money);

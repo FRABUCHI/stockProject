@@ -1,22 +1,39 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const crypto = require('crypto')
+const config = require('../config')
 
 const User = new Schema({
-    username: String,
+    id: String,
     password: String,
+    name: String,
+    email: String,
+    create_date: {
+        type: Date,
+        default: Date.now
+    },
     admin: {
         type: Boolean,
         default: false
-    }
+    }, 
+    favorites: [{
+        company: String
+    }]
 })
 
 // create new User document
-User.statics.create = function (username, password) {
-    console.log("2차 생성 이름, 패스워드: " + username + ' ' + password)
+User.statics.create = function (id, name, password, email) {
+    console.log("SYSTEM: 2차 유저 생성 = " + id + ' ' + name + ' ' + password + ' ' + email)
+
+    const encrypted = crypto.createHmac('sha1', config.secret)
+    .update(password)
+    .digest('base64')
 
     const user = new this({
-        username,
-        password
+        id,
+        name,
+        password: encrypted,
+        email
     })
 
     // return the Promise
@@ -27,22 +44,20 @@ User.statics.create = function (username, password) {
 }
 
 // find one user by using username
-User.statics.findOneByUsername = function (username) {
-    console.log('1차 중복검사 find함수: ' + username)
+User.statics.findOneByUsername = function (id) {
+    console.log('SYSTEM: 1차 id 중복검사 = ' + id)
     return this.findOne({
-        username
+        id
     }).exec()
 }
 
-
 // verify the password of the User documment
 User.methods.verify = function (password) {
-    return this.password === password
+    const encrypted = crypto.createHmac('sha1', config.secret)
+        .update(password)
+        .digest('base64')
+    
+    return this.password === encrypted
 }
 
-User.methods.assignAdmin = function () {
-    this.admin = true
-    return this.save()
-}
-
-module.exports = mongoose.model('User', User)
+module.exports = mongoose.model('User', User, 'userList')

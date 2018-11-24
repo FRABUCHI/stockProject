@@ -1,29 +1,37 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
+Vue.prototype.$http = axios
 
 export const store = new Vuex.Store({
   state: {
-    token: localStorage.getItem('access_token') || null
+    token: localStorage.getItem('access_token') || null,
+    id: localStorage.getItem('id') || null
   },
   getters: {
     loggedIn (state) {
       return state.token !== null
+    },
+    id (state) {
+      return state.id
     }
   },
   mutations: {
     destroyToken (state) {
       state.token = null
+      state.id = null
     },
-    retrieveToken (state, token) {
+    retrieveToken (state, token, id) {
       state.token = token
+      state.id = id
     }
   },
   actions: {
     signup (context, data) {
       return new Promise((resolve, reject) => {
-        this.$http.post('/api/signup', {
+        axios.post('/api/auth/register', {
           id: data.id,
           name: data.name,
           email: data.email,
@@ -38,31 +46,34 @@ export const store = new Vuex.Store({
       })
     },
     destroyToken (context) {
-      this.$http.axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
 
       if (context.getters.loggedIn) {
         return new Promise((resolve, reject) => {
-          this.$http.axios.post('/api/logout')
-            .then(res => {
+          axios.post('/api/auth/logout')
+            .then(response => {
               localStorage.removeItem('access_token')
               context.commit('destroyToken')
-              resolve(res)
+              resolve(response)
+              // console.log(response);
+              // context.commit('addTodo', response.data)
             })
-            .catch(err => {
+            .catch(error => {
               localStorage.removeItem('access_token')
               context.commit('destroyToken')
-              reject(err)
+              reject(error)
             })
         })
       }
     },
     retrieveToken (context, credentials) {
       return new Promise((resolve, reject) => {
-        this.$http.axios.post('/api/login', {
+        axios.post('/api/auth/login', {
           id: credentials.id,
           password: credentials.password
         }).then(res => {
-          const token = res.data.access_token
+          const token = res.data.token
+          localStorage.setItem('id', credentials.id)
           localStorage.setItem('access_token', token)
           context.commit('retrieveToken', token)
           resolve(res)

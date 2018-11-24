@@ -1,10 +1,11 @@
 <template>
     <div class='Stock'>
       <h1>여긴 Stock 페이지입니당~~</h1>
+        
         <b-nav-form>
-           <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
-           <b-button size="sm" class="my-2 my-sm-0" type="submit">검색</b-button>
+           <b-form-input v-on:input="search = $event.target.value" class="mr-sm-2" type="text" placeholder="검색"/>
         </b-nav-form>
+
         <b-alert :show="dismissCountDown"
              dismissible
              variant="warning"
@@ -14,16 +15,24 @@
         </b-alert>
         <b-tabs>
             <b-tab title="관심종목" v-on:click="getFavoritesList" active>
-              <b-table striped hover
+              <b-table striped hover stcked="md"
                        :items="favorites"
                        :fields="favorites_fields"
                        :current-page="currentPage"
-                       :per-page="perPage">
+                       :per-page="perPage"
+                       :filter="filter"
+                       @filtered="onFiltered">
                         <template slot="detail" slot-scope="row">
                          <b-button size="sm" variant="info" class="mr-2"
-                                   @click="pushDetails(row.index)">
+                                   @click="pushDetails()">
                               보기
                          </b-button>
+                        </template>
+                        <template slot="delete" slot-scope="row"> 
+                           <b-button size="sm" class="mr-2" variant="info" 
+                                      @click="deleteFavorites(row.index)">
+                                삭제
+                           </b-button>
                         </template>
               </b-table>
             </b-tab>
@@ -35,7 +44,7 @@
                          :per-page="perPage"> 
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="mr-2" variant="info"
-                                     @click="pushDetails(row.index)">
+                                     @click="pushDetails()">
                                 보기
                            </b-button>
                           </template>
@@ -47,21 +56,22 @@
                           </template>
                 </b-table>
             </b-tab>
-        </b-tabs>
-
-         <b-row>
-            <b-col md="6" class="my-1">
+        </b-tabs> 
+         <b-row class="paging">
+            <b-col md="6" class="page">
              <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
             </b-col>
          </b-row>
     </div>
 </template>
 <script>
+import { store } from '../store/store'
+
 export default {
   name: "App",
   data() {
     return {
-      favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail"],
+      favorites_fields: ["company", "open", "close", "high", "low", "volume", "detail", "delete"],
       stock_fields: ["company", "open", "close", "high", "low", "volume", "detail", "favorites"],
       favorites: [],
       stock: [],
@@ -72,7 +82,7 @@ export default {
       perPage: 7,
       dismissSecs: 1,
       dismissCountDown: 0,
-      id:  'syl'
+      id: store.getters.id
     };
   },
   methods: {
@@ -93,18 +103,18 @@ export default {
       this.favorites = []
       this.favoritesRows = 0
       this.totalRows = 0
-      this.$http.get('/api/stock/favorites', {
-        id: this.id//유저아이디
+      this.$http.post('/api/stock/favorites', {
+        userId: this.id
       })
       .then((res) => {
-        res.data.map((item)=>{
-          for(var i = 0; i < item.id.length; i++){
-            let name = item.id[i]
+        for(var i = 0; i < res.data.length; i++){
+            let name = res.data[i].company
             let num = -1
             console.log('Response Data: ' + name)
-            for(var j = 0; j < 4; j++){
+            for(var j = 0; j < this.stock.length; j++){
+              //즐겨찾는 회사 index찾기
               num = this.stock[j].company.indexOf(name)
-              if (num != -1) {
+              if (num != -1) {//있으면 favorites배열에 회사 정보 넣기
                 console.log(j); 
                 this.favorites.push(this.stock[ j ])
                 break;
@@ -113,17 +123,33 @@ export default {
             this.favoritesRows = this.favorites.length
             this.totalRows = this.favorites.length
           }
-        })
+        }).catch((err) => [
+        console.log(err)
+      ])
+    },
+    deleteFavorites(index){
+      let company = this.stock[index].company
+      console.log(company)
+
+      this.$http.post('/api/stock/deleteFavorites', {
+        userId: this.id,
+        company: company
+      })
+      .then((res) => {
+        console.log(res.status)
       }).catch((err) => [
         console.log(err)
       ])
     },
     pushFavorites(index) {
+      //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-      console.log(this.stock[index].company)
+      
       let company = this.stock[index].company
+      console.log(company)
+
       this.$http.post('/api/stock/addFavorites', {
-        userId: 'syl',
+        userId: this.id,
         company: company
       })
       .then((res) => {
@@ -149,8 +175,26 @@ export default {
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;
+    },
+    onFiltered (filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.totalRows = filteredItems.length
+      this.currentPage = 1
     }
-
   }
 };
 </script>
+
+<style>
+.paging{
+  padding-left:530px;
+  padding-right:600px;
+  padding-top:15px;
+}
+.stock{
+  padding:250px;
+  padding-right:300px;
+  padding-top:75px;
+  text-align: center;
+}
+</style>

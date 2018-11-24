@@ -72,7 +72,8 @@ export default {
         password: this.user.password,
       })
         .then(res => {
-          this.$router.push({ name: 'login' })
+          console.log(res.status)
+          this.$router.push({ name: 'Login' })
         })
     },
     onReset(evt) {
