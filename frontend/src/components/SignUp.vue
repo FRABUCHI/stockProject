@@ -1,12 +1,12 @@
 <template>
 <div id="signup">
   <b-card
-          style="max-width: 35rem;margin-top:70px;padding:20px;padding-top:35px;margin-left:500px;marign-right:500px"
+          style="max-width: 35rem;margin-top:70px;padding:20px;padding-top:35px;margin-left:auto;margin-right:auto;margin-bottom:100px"
           img-src="https://i.imgur.com/1D1xFBN.png"
           img-alt="login logo"
           img-top
           tag="article">
-          <div style="padding-top:5px;padding-bottom:17px;font-size:20px">
+          <div style="padding-top:5px;padding-bottom:17px;font-size:20px;">
             <p1>Sign Up</p1>
           </div>
           <b-form @submit.prevent="signUp" @reset="onReset">
@@ -50,11 +50,11 @@
                             placeholder="이메일 주소">
               </b-form-input>
             </b-form-group>
-            <div style="margin-left:130px;margin-right:130px;margin-top:30px">
+            <div style="margin-left:auto;margin-right:auto;margin-top:30px;width:38%">
               <b-button type="submit" variant="primary">회원가입</b-button>
               <b-button type="reset" variant="danger">&nbsp;초기화&nbsp;</b-button>
             </div>
-            <div style="margin-top:15px;margin-left:90px;margin-right:15px">
+            <div style="margin-top:15px;margin-left:auto;margin-right:auto;margin-top:30px;width:49%">
               Already have an account?&nbsp;&nbsp;&nbsp;<a href="/Login">Login</a>
             </div>
           </b-form>

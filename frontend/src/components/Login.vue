@@ -1,7 +1,7 @@
 <template>
 <div id="login">
   <b-card
-          style="max-width: 22rem;margin-top:100px;padding:20px;padding-top:35px;margin-left:600px;marign-right:600px"
+          style="max-width: 22rem;margin-top:100px;margin-bottom:100px;padding:20px;padding-top:35px;margin-left:auto;margin-right:auto"
           img-src="https://i.imgur.com/1D1xFBN.png"
           img-alt="login logo"
           img-top
@@ -30,11 +30,11 @@
                           placeholder="비밀번호">
             </b-form-input>
           </b-form-group>
-          <div style="margin-left:50px;margin-right:50px;margin-top:30px">
+          <div style="margin-top:30px; margin-left:auto; margin-right:auto;width:57%">
             <b-button type="submit" variant="primary">로그인</b-button>
             <b-button type="reset" variant="danger">초기화</b-button>
           </div>
-          <div style="margin-top:15px;margin-left:15px;margin-right:15px">Don’t have an account?&nbsp;&nbsp;&nbsp;<a href="/SignUp">Sign Up</a></div>
+          <div style="margin-top:15px;margin-left:auto;margin-right:auto;width:90%">Don’t have an account?&nbsp;&nbsp;&nbsp;<a href="/SignUp">Sign Up</a></div>
         </b-form>
     </b-card>
 </div>
