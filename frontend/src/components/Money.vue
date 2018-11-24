@@ -42,7 +42,7 @@
             <b-card img-src="https://i.imgur.com/GDb8E5Q.jpg"
                     img-alt="Card image"
                     img-top
-                    style="max-width: 20rem;margin-left:auto">
+                    style="max-width: 20rem;margin-left:auto;margin-right:auto">
                 <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[0].totalprofit}}원</h5></b-list-group-item>
@@ -57,7 +57,7 @@
             <b-card v-if="testList.length>1" img-src="https://i.imgur.com/XLpKK1m.jpg"
                   img-alt="Card image"
                   img-top
-                  style="max-width: 20rem;margin-left:10px">
+                  style="max-width: 20rem;margin-left:10px;margin-right:auto">
               <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[1].totalprofit}}원</h5></b-list-group-item>
@@ -73,7 +73,7 @@
             <b-card v-if="testList.length>2" img-src="https://i.imgur.com/PZTP8H7.jpg"
                   img-alt="Card image"
                   img-top
-                  style="max-width: 20rem;margin-right:auto;margin-left:10px">
+                  style="max-width: 20rem;margin-right:auto;margin-left:10px;margin-right:auto">
               <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[2].totalprofit}}원</h5></b-list-group-item>
@@ -157,11 +157,6 @@ export default {
         // 상한가 주식 목록
         { company: '삼성전자', present_price: 290000, predict_price: 320000},
         { company: 'LG전자', present_price: 33500, predict_price: 36500},
-        { company: 'SK하이닉스', present_price: 26800, predict_price: 29000},
-        { company: '아주대', present_price: 48000, predict_price: 62000},
-        { company: 'Tonez', present_price: 21800, predict_price: 33300},
-        { company: 'LG화학', present_price: 25200, predict_price: 28300},
-        { company: '현대자동차', present_price: 32200, predict_price: 40300},
       ],
       stockList: [
         { company: '삼성전자', open: 100, close: 340000, high: 3500},
@@ -195,7 +190,12 @@ export default {
     this.$http.get(`/api/money`)
       .then(res => {
         console.log(res.data);
-        this.stockUpList = res.data
+        this.stockUpList = [];
+        for(var data in res.data){
+          if(data.state==1){
+            this.stockUpList.push(data);
+          }
+        }
       })
       .catch(err => {
         console.log(err);
