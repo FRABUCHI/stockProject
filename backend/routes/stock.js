@@ -4,7 +4,6 @@ var User = require('../model/user');
 var StockList = require('../model/stockList');
 var Favorites = require('../model/favorites');
 
-
 //즐겨찾기 가져오기
 router.post('/favorites', function (req, res, next) {
     let userId = req.body.userId;
@@ -67,7 +66,7 @@ router.post('/addFavorites', function (req, res, next) {
     };
     console.log(userId + ' ' + req.body.company)
     
-    User.findOne({id: userId}, {$push: {favorites: company}})
+    User.findOneAndUpdate({id: userId}, {$push: {favorites: company}})
     .exec((err, data)=>{
         console.log(data.favorites)
         res.json(data.favorites)
@@ -94,8 +93,5 @@ router.post('/deleteFavorites', function (req, res, next) {
             res.json(data)
         })
 })
-
-
-
 
 module.exports = router;

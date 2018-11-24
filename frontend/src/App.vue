@@ -16,7 +16,7 @@ export default {
 
 <style>
 body {
-  background-color: lightgray;
+  background-color: white;
 }
 .nav-background {
   background-color: black;
