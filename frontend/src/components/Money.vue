@@ -1,26 +1,31 @@
 <template>
   <div class="Money">
-    <h2 style="text-align:center;height:60px">주식 추천</h2>
-    <b-container class="bv-example-row">
-      <b-row>
-          <b-col cols>
-            <b-form-radio-group id="btnradios"
-                            buttons
-                            button-variant="outline-dark"
-                            size="lg"
-                            v-model="numselected"
-                            :options="numoptions"
-                            name="radioBtnOutline" />
+    <div style="margin-bottom: 10px">
+      <h2 style="height:40px;text-align: center">주식 추천</h2>
+      <hr align="center" style="border: solid 0.5px black; width: 70%;">
+    </div>
+    <div>
+      <b-container class="bv-example-row" style="margin: auto;width: 80%;
+                margin-top:40px;">
+        <b-row style="margin:auto">
+
+            <b-col sm="auto" style="margin-left:auto">
+              <b-form-radio-group style="margin:auto" id="btnradios"
+                              buttons
+                              button-variant="outline-dark"
+                              size="lg"
+                              v-model="numselected"
+                              :options="numoptions"
+                              name="radioBtnOutline" />
+            </b-col>
+          <b-col sm="4" style="margin:0"><b-form-select style="margin:auto" v-model="moneyselected" :options="moneyoptions" class="mb-3" />
           </b-col>
-        <b-col cols><b-form-select v-model="moneyselected" :options="moneyoptions" class="mb-3" />
-        </b-col>
-
-        <b-col cols>
-          <b-button size="lg" v-on:click="runAnaliysis()" >검색</b-button>
-        </b-col>
-      </b-row>
-    </b-container>
-
+          <b-col sm="auto" style="margin-right:auto">
+            <b-button style="margin:auto" size="lg" v-on:click="runAnaliysis()" >검색</b-button>
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
     <div v-if="viewtype === 'A'">
       <br>
       <h4 style="height:120px;text-align:center">Mr.Stock이 데이터를 분석 중 입니다.</h4>
@@ -32,12 +37,12 @@
     <div v-else-if="viewtype === 'B'">
       <br>
 
-      <div style="margin-left: 150px">
+      <div style="margin: auto;">
         <b-card-group deck>
             <b-card img-src="https://i.imgur.com/GDb8E5Q.jpg"
                     img-alt="Card image"
                     img-top
-                    style="max-width: 20rem;">
+                    style="max-width: 20rem;margin-left:auto">
                 <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[0].totalprofit}}원</h5></b-list-group-item>
@@ -52,7 +57,7 @@
             <b-card v-if="testList.length>1" img-src="https://i.imgur.com/XLpKK1m.jpg"
                   img-alt="Card image"
                   img-top
-                  style="max-width: 20rem;">
+                  style="max-width: 20rem;margin-left:10px">
               <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[1].totalprofit}}원</h5></b-list-group-item>
@@ -68,7 +73,7 @@
             <b-card v-if="testList.length>2" img-src="https://i.imgur.com/PZTP8H7.jpg"
                   img-alt="Card image"
                   img-top
-                  style="max-width: 20rem;">
+                  style="max-width: 20rem;margin-right:auto;margin-left:10px">
               <div class="card-text">
                   <b-list-group>
                     <b-list-group-item href="#"><h5>총 예상이익 : {{testList[2].totalprofit}}원</h5></b-list-group-item>
@@ -81,7 +86,10 @@
              </b-card>
 
          </b-card-group>
+      </div>
       <br>
+      <div style="margin: auto;
+                width: 60%;">
       <b-table style=  striped hover
                            :items="showList"
                            :fields="fields">
@@ -120,8 +128,8 @@ export default {
       isrewite: false,
       viewtype: '',
       loading: '',
-      color: '',
-      size: '150px',
+      color: '#FF9933',
+      size: '200px',
       msg: 'This page is money',
       recomandNumber: 0,
       numselected: 1,
@@ -187,7 +195,7 @@ export default {
     this.$http.get(`/api/money`)
       .then(res => {
         console.log(res.data);
-        this.stockUpList = res.data  
+        this.stockUpList = res.data
       })
       .catch(err => {
         console.log(err);
@@ -371,7 +379,7 @@ export default {
             this.testList[i].totalcost = this.numberWithCommas(this.testList[i].totalcost);
         }
       }
-    },    
+    },
     setShowList(){
       for(var i in this.recomandList){
         for(var j in this.stockList){
@@ -425,6 +433,7 @@ export default {
 </style>
 <style>
 .Money{
+  min-height: 100%;
   padding:90px;
 }
 </style>

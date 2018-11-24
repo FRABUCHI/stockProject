@@ -31,14 +31,18 @@
     
     <router-view/>
 
-    <section class= "footer">
-      <div class = "inner">
-       개발자: 이소연, 임문수, 전혁준&nbsp;&nbsp;대표번호: 010-5040-9375<br>
-       주소: 경기도 수원시 영통구 월드컵로 206 아주대학교 미디어학과&nbsp;&nbsp;
-       <br>Copyright © 2018 Ajou media Mr.Stock. All Rights Reserved.
-      </div>
-    </section>
+    <footer>
+      <section class= "footer">
+        <div class = "inner">
+        개발자: 이소연, 임문수, 전혁준&nbsp;&nbsp;대표번호: 010-5040-9375<br>
+        주소: 경기도 수원시 영통구 월드컵로 206 아주대학교 미디어학과&nbsp;&nbsp;
+        <br>Copyright © 2018 Ajou media Mr.Stock. All Rights Reserved.
+        </div>
+      </section>
+
+    </footer>
   </div>
+
 </template>
 
 <script>
@@ -52,18 +56,26 @@ export default {
 </script>
 
 <style>
-body {
+html, body {
+	width: 100%; height: 100%;
   background-color: white;
+}
+#app{
+  height: 100%;
 }
 .nav-background {
   background-color: black;
 }
 .footer{
-border-top:1px solid #666;
-background-color: #333;
+  position: absolute;
+  width: 100%;
+  left:0px;
+  bottom:0px auto 0px;
+  border-top:1px solid #666;
+  background-color: #333;
+
 }
 .inner{
-  position: relative;
   max-width: 1400px;
   padding: 0;
   margin: 0 auto;
