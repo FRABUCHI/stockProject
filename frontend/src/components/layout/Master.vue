@@ -25,11 +25,18 @@
             <b-dropdown-item href="/main/settings">설정</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
-      
+
       </b-collapse>
     </b-navbar>
-    <b-button @click="loggedIn">하이</b-button>
     <router-view/>
+
+    <section class= "footer">
+      <div class = "inner">
+       개발자: 이소연, 임문수, 전혁준&nbsp;&nbsp;대표번호: 010-5040-9375<br>
+       주소: 경기도 수원시 영통구 월드컵로 206 아주대학교 미디어학과&nbsp;&nbsp;
+       <br>Copyright © 2018 Ajou media Mr.Stock. All Rights Reserved.
+      </div>
+    </section>
   </div>
 </template>
 
@@ -49,5 +56,24 @@ body {
 }
 .nav-background {
   background-color: black;
+}
+.footer{
+border-top:1px solid #666;
+background-color: #333;
+}
+.inner{
+  position: relative;
+  max-width: 1400px;
+  padding: 0;
+  margin: 0 auto;
+  padding-top: 14px;
+  padding-bottom: 26px;
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+
+}
+.indigo{
+  color: indigo;
 }
 </style>
