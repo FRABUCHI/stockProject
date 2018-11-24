@@ -1,27 +1,22 @@
 <template>
   <div class="Money">
-    <h1>{{ msg }}</h1>
     <h2 style="text-align:center;height:60px">주식 추천</h2>
 
     <b-container class="bv-example-row">
       <b-row>
-          <b-col cols="4">
+          <b-col cols>
             <b-form-radio-group id="btnradios"
                             buttons
-                            button-variant="outline-primary"
+                            button-variant="outline-dark"
                             size="lg"
                             v-model="numselected"
                             :options="numoptions"
                             name="radioBtnOutline" />
           </b-col>
-        <b-col cols="5"><b-form-select v-model="moneyselected" :options="moneyoptions" class="mb-3" />
-          <div>
-           Selected: <strong>{{ moneyselected }}
-            </strong>
-          </div>
+        <b-col cols><b-form-select v-model="moneyselected" :options="moneyoptions" class="mb-3" />
         </b-col>
 
-        <b-col cols="2">
+        <b-col cols>
           <b-button size="lg" v-on:click="runAnaliysis()" >검색</b-button>
         </b-col>
       </b-row>
@@ -36,7 +31,59 @@
     </div>
 
     <div v-else-if="viewtype === 'B'">
-      <b-table striped hover
+      <br>
+
+      <div style="margin-left: 150px">
+        <b-card-group deck>
+            <b-card img-src="https://i.imgur.com/GDb8E5Q.jpg"
+                    img-alt="Card image"
+                    img-top
+                    style="max-width: 20rem;">
+                <div class="card-text">
+                  <b-list-group>
+                    <b-list-group-item href="#"><h5>총 예상이익 : {{testList[0].totalprofit}}원</h5></b-list-group-item>
+                    <b-list-group-item href="#"><h5>총 구매비용 : {{testList[0].totalcost}}원</h5></b-list-group-item>
+                    <div v-for="j in testList[0].data" v-bind:data="j" v-bind:key="j.company">
+                      <b-list-group-item href="#"><h5>{{j.company}} :&nbsp; {{j.stockNum}} 주</h5></b-list-group-item>
+                    </div>
+                  </b-list-group>
+              </div>
+            </b-card>
+
+            <b-card v-if="testList.length>1" img-src="https://i.imgur.com/XLpKK1m.jpg"
+                  img-alt="Card image"
+                  img-top
+                  style="max-width: 20rem;">
+              <div class="card-text">
+                  <b-list-group>
+                    <b-list-group-item href="#"><h5>총 예상이익 : {{testList[1].totalprofit}}원</h5></b-list-group-item>
+                    <b-list-group-item href="#"><h5>총 구매비용 : {{testList[1].totalcost}}원</h5></b-list-group-item>
+                    <div v-for="j in testList[1].data" v-bind:data="j" v-bind:key="j.company">
+                      <b-list-group-item href="#"><h5>{{j.company}} :&nbsp; {{j.stockNum}} 주</h5></b-list-group-item>
+                    </div>
+                  </b-list-group>
+              </div>
+             </b-card>
+
+
+            <b-card v-if="testList.length>2" img-src="https://i.imgur.com/PZTP8H7.jpg"
+                  img-alt="Card image"
+                  img-top
+                  style="max-width: 20rem;">
+              <div class="card-text">
+                  <b-list-group>
+                    <b-list-group-item href="#"><h5>총 예상이익 : {{testList[2].totalprofit}}원</h5></b-list-group-item>
+                    <b-list-group-item href="#"><h5>총 구매비용 : {{testList[2].totalcost}}원</h5></b-list-group-item>
+                    <div v-for="j in testList[2].data" v-bind:data="j" v-bind:key="j.company">
+                      <b-list-group-item href="#"><h5>{{j.company}} :&nbsp; {{j.stockNum}} 주</h5></b-list-group-item>
+                    </div>
+                  </b-list-group>
+              </div>
+             </b-card>
+
+         </b-card-group>
+      <br>
+      <b-table style=  striped hover
                            :items="showList"
                            :fields="fields">
                             <template slot="상세보기" slot-scope="row">
@@ -45,20 +92,11 @@
                              </b-button>
                             </template>
       </b-table>
-      <br>
-      <div v-if="numselected === 'radio1'"></div>
-      <div v-for="item in resultList" v-bind:data="item" v-bind:key="item.company">
-       회사명 : {{item.company}} 구매량 : {{item.stockNum}}주 기대이익 : {{item.preditprofit}}
       </div>
-      <div v-for="(item, index) in testList" v-bind:data="item" v-bind:key="item.data">
-       <br>{{index+1}}위 총 예상이익 : {{item.totalprofit}} 총 구매비용 : {{item.totalcost}}
-        <div v-for="j in testList[index].data" v-bind:data="j" v-bind:key="j.company">
-          회사명 : {{j.company}} 주식수: {{j.stockNum}} <br>
-        </div>
-      </div>
+
     </div>
 
-    <div v-else>
+    <div style="padding-bottom: 160px" v-else>
       <br>
       <h5 style="text-align:center;line-height:35px">종목수, 금액을 결정하고 검색버튼을 눌러주세요.<br>
       (단, 조건에 해당 하는 조건의 상한가 상품이 없을 경우 분석 서비스를 제공하지 않습니다.) </h5>
@@ -87,11 +125,11 @@ export default {
       size: '150px',
       msg: 'This page is money',
       recomandNumber: 0,
-      numselected: 'radio1',
+      numselected: 1,
       numoptions: [
-        { text: '단일종목', value: 'radio1' },
-        { text: '2개 종목', value: 'radio2' },
-        { text: '3개 종목', value: 'radio3' }
+        { text: '단일종목', value: 1},
+        { text: '2개 종목', value: 2 },
+        { text: '3개 종목', value: 3 }
       ],
       moneyselected: null,
       moneyoptions: [
@@ -141,30 +179,26 @@ export default {
       this.showList = [];
       this.recomandList = [];
       this.resultList = [];
+      this.testList = [];
+      this.recomandNumber=this.numselected;
       if(this.isrewite == false){
         this.rewriteStockUpList();
       }
       if(this.moneyselected == null){
         alert('금액을 선택해주세요.');
       }
+      else if(this.recomandNumber>this.stockUpList.length){
+        alert('상승주의 정보가 부족하여 종목추천이 불가능합니다.');
+      }
       else{
         this.viewtype = 'A';
         this.recomandList = [];
         this.showList = [];
-        if(this.numselected == 'radio1')
-        {
-          this.recomandNumber = 1;
-        }
-        else if(this.numselected == 'radio2'){
-          this.recomandNumber = 2;
-        }
-        else if(this.numselected == 'radio3'){
-          this.recomandNumber = 3;
-        }
+
         this.findReconmandStock();
         this.getRecomand();
         this.setShowList();
-        this.viewtype = 'B';
+        setTimeout(()=> {this.viewtype = 'B';}, 2000);
       }
       // predict에서 상한가 6종목 먼저 뽑음.
       // 1개2개3개 알고리즘돌림.
@@ -176,6 +210,7 @@ export default {
           if(this.stockUpList[i].company==this.stockList[j].company){
             this.stockUpList[i].predict_price += (this.stockList[j].close-this.stockUpList[i].present_price);
             this.stockUpList[i].present_price += (this.stockList[j].close-this.stockUpList[i].present_price);
+            break;
           }
         }
       }
@@ -224,11 +259,16 @@ export default {
       var gridyNum = 0;
       var gridyNum_two = 0;
       var balanceNum = 0;
+      var numberResultList = 3;
       var tempdata = [];
       this.sortRecomandList();
       if(this.recomandNumber==1){
-        for(var i=0; i<3; i++){
-          this.resultList.push(this.recomandList[i]);
+        if(this.recomandList.length<3){
+          numberResultList=this.recomandList.length;
+        }
+        for(var i=0; i<numberResultList; i++){
+          this.testList.push({totalprofit: this.numberWithCommas(this.recomandList[i].preditprofit),totalcost: this.numberWithCommas(this.recomandList[i].cost), data: []});
+          this.testList[i].data.push(this.recomandList[i]);
         }
       }
       else{
@@ -303,13 +343,17 @@ export default {
             }
           }
         }
-        this.testList = [];
-        for(var i=0; i<3;i++){
-          this.testList[i] = tempdata[i];
+        if(tempdata.length<3){
+          numberResultList=tempdata.length;
+        }
+        for(var i=0; i<numberResultList;i++){
+            this.testList[i] = tempdata[i];
+            this.testList[i].totalprofit = this.numberWithCommas(this.testList[i].totalprofit);
+            this.testList[i].totalcost = this.numberWithCommas(this.testList[i].totalcost);
         }
       }
     },
-    
+
     setShowList(){
       for(var i in this.recomandList){
         for(var j in this.stockList){
@@ -318,6 +362,9 @@ export default {
           }
         }
       }
+    },
+    numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     getStockList(){ //페이지들어오자마자
       this.$http.get('/api/stock')
@@ -373,3 +420,9 @@ export default {
   height: 3rem;
 }
 </style>
+<style>
+.Money{
+  padding:90px;
+}
+</style>
+
