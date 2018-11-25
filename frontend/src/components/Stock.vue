@@ -1,6 +1,7 @@
 <template>
     <div class='Stock'>
-      <h1>종목 추천</h1><br><br>
+      <h1>종목 추천</h1>
+      <hr align="center" style="border: solid 0.5px black; width: 90%;"><br>
         <input class='searchbar' type="text" v-on:input="search = $event.target.value"  placeholder="  주식명 입력"/>
         <b-alert :show="dismissCountDown"
              dismissible
@@ -9,8 +10,9 @@
              @dismiss-count-down="countDownChanged">
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
+        <div class="test">
         <b-tabs>
-            <b-tab title="관심 종목" border=true v-on:click="getFavoritesList" active>
+            <b-tab title="관심 종목" v-on:click="getFavoritesList" active>
             <div class="tables">
              <b-table striped hover stcked="md"
                       :items="favorFilteredList"
@@ -23,8 +25,8 @@
                              보기
                         </b-button>
                        </template>
-                       <template slot="delete" slot-scope="row"> 
-                          <b-button size="sm" class="btn1"  
+                       <template slot="delete" slot-scope="row">
+                          <b-button size="sm" class="btn1"
                                      @click="deleteFavorites(favorFilteredList[row.index].company)">
                                삭제
                           </b-button>
@@ -33,21 +35,21 @@
              </div>
             </b-tab>
 
-            <b-tab title="전체 종목" border=true v-on:click="getStockList" active>
+            <b-tab title="전체 종목" v-on:click="getStockList" active>
               <div class="tables">
                 <b-table striped hover
                          :items="stockFilteredList"
                          :fields="stock_fields"
                          :current-page="currentPage"
-                         :per-page="perPage"> 
+                         :per-page="perPage">
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="btn1" variant="info"
                                      @click="pushDetails(stockFilteredList[row.index].company)">
                                 보기
                            </b-button>
                           </template>
-                          <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="btn1" variant="info" 
+                          <template slot="favorites" slot-scope="row">
+                           <b-button size="sm" class="btn1" variant="info"
                                       @click="pushFavorites(stockFilteredList[row.index].company)">
                                 추가
                            </b-button>
@@ -55,8 +57,8 @@
                 </b-table>
               </div>
             </b-tab>
-
-        </b-tabs> 
+        </b-tabs>
+        </div>
          <b-row class="paging">
             <b-col md="6" class="page">
              <b-pagination list-style="color: black"
@@ -94,7 +96,7 @@ export default {
         console.log('Response Data: ' + res.data)
         this.stock = res.data
         this.stockRows = this.stock.length
-        this.totalRows = this.stock.length 
+        this.totalRows = this.stock.length
         console.log("stock: " + this.stock)
       }).catch((err) => [
         console.log(err)
@@ -116,7 +118,7 @@ export default {
               //즐겨찾는 회사 index찾기
               num = this.stock[j].company.indexOf(name)
               if (num != -1) {//있으면 favorites배열에 회사 정보 넣기
-                console.log(j); 
+                console.log(j);
                 this.favorites.push(this.stock[ j ])
                 break;
               }
@@ -145,7 +147,7 @@ export default {
     pushFavorites(company) {
       //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-  
+
       console.log(company)
 
       this.$http.post('/api/stock/addFavorites', {
@@ -164,7 +166,7 @@ export default {
       this.$router.push({
         name: 'Detail',
         params: {
-          company: company 
+          company: company
         }
       }
       )
@@ -205,21 +207,23 @@ export default {
 </script>
 
 <style>
-.paging{
-  padding-left:550px;
-  padding-right:550px;
-  padding-top:15px;
-}
 .Stock{
   min-height:100%;
   padding:250px;
-  padding-right:300px;
+  margin-left:auto;
+  margin-right:auto;
   padding-top:75px;
   text-align: center;
 }
+.paging{
+  padding-left:475px;
+  padding-right:500px;
+  padding-top:15px;
+}
 .searchbar{
-  width: 400px; 
-  height :40px;
+  width: 380px;
+  height :38px;
+  padding: 0px;
   border-width: 1px;
   border-color :lightgrey;
 }

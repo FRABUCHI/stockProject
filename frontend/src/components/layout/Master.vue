@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-      <b-navbar toggleable="md" type="dark" class="nav-background">
+      <b-navbar style="padding-left:50px" toggleable="md" type="dark" class="nav-background">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-      <b-navbar-brand href="/">Mr. Stock</b-navbar-brand>
-
+      <b-navbar-brand style="font-size: 2rem" href="/">
+       <img src="https://i.imgur.com/LVjrCdt.png">
+      </b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
 
         <b-navbar-nav class="ml-auto">
@@ -28,7 +29,7 @@
 
       </b-collapse>
     </b-navbar>
-    
+
     <router-view/>
 
     <footer>
@@ -65,6 +66,7 @@ html, body {
 }
 .nav-background {
   background-color: black;
+  height: 80px;
 }
 .footer{
   position: absolute;
