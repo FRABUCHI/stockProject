@@ -25,8 +25,8 @@
                              보기
                         </b-button>
                        </template>
-                       <template slot="delete" slot-scope="row"> 
-                          <b-button size="sm" class="btn1"  
+                       <template slot="delete" slot-scope="row">
+                          <b-button size="sm" class="btn1"
                                      @click="deleteFavorites(favorFilteredList[row.index].company)">
                                삭제
                           </b-button>
@@ -41,15 +41,15 @@
                          :items="stockFilteredList"
                          :fields="stock_fields"
                          :current-page="currentPage"
-                         :per-page="perPage"> 
+                         :per-page="perPage">
                           <template slot="detail" slot-scope="row">
                            <b-button size="sm" v-on:click="'#'" class="btn1" variant="info"
                                      @click="pushDetails(stockFilteredList[row.index].company)">
                                 보기
                            </b-button>
                           </template>
-                          <template slot="favorites" slot-scope="row"> 
-                           <b-button size="sm" class="btn1" variant="info" 
+                          <template slot="favorites" slot-scope="row">
+                           <b-button size="sm" class="btn1" variant="info"
                                       @click="pushFavorites(stockFilteredList[row.index].company)">
                                 추가
                            </b-button>
@@ -57,7 +57,7 @@
                 </b-table>
               </div>
             </b-tab>
-        </b-tabs> 
+        </b-tabs>
         </div>
          <b-row class="paging">
             <b-col md="6" class="page">
@@ -96,7 +96,7 @@ export default {
         console.log('Response Data: ' + res.data)
         this.stock = res.data
         this.stockRows = this.stock.length
-        this.totalRows = this.stock.length 
+        this.totalRows = this.stock.length
         console.log("stock: " + this.stock)
       }).catch((err) => [
         console.log(err)
@@ -118,7 +118,7 @@ export default {
               //즐겨찾는 회사 index찾기
               num = this.stock[j].company.indexOf(name)
               if (num != -1) {//있으면 favorites배열에 회사 정보 넣기
-                console.log(j); 
+                console.log(j);
                 this.favorites.push(this.stock[ j ])
                 break;
               }
@@ -147,7 +147,7 @@ export default {
     pushFavorites(company) {
       //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-  
+
       console.log(company)
 
       this.$http.post('/api/stock/addFavorites', {
@@ -166,7 +166,7 @@ export default {
       this.$router.push({
         name: 'Detail',
         params: {
-          company: company 
+          company: company
         }
       }
       )
@@ -221,7 +221,7 @@ export default {
   padding-top:15px;
 }
 .searchbar{
-  width: 380px; 
+  width: 380px;
   height :38px;
   padding: 0px;
   border-width: 1px;

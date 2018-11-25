@@ -29,7 +29,7 @@
 
       </b-collapse>
     </b-navbar>
-    
+
     <router-view/>
 
     <footer>

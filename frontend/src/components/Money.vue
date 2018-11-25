@@ -88,15 +88,29 @@
          </b-card-group>
       </div>
       <br>
+      <b-alert :show="dismissCountDown"
+              dismissible
+              variant="warning"
+              @dismissed="dismissCountDown=0"
+              @dismiss-count-down="countDownChanged">
+        <p>즐겨찾기에 추가되었습니다.</p>
+      </b-alert>
       <div style="margin: auto;
                 width: 60%;">
       <b-table style=  striped hover
                            :items="showList"
                            :fields="fields">
-                            <template slot="상세보기" slot-scope="row">
-                             <b-button size="sm" v-on:click="'/detail/:stockId'" class="mr-2">
+                            <template slot="detail" slot-scope="row">
+                             <b-button size="sm" v-on:click="pushDetails(showList[row.index].company)" class="mr-2">
                                   보기
                              </b-button>
+                            </template>
+
+                            <template slot="favorites" slot-scope="row">
+                            <b-button size="sm" class="btn1" variant="info"
+                                      @click="pushFavorites(showList[row.index].company)">
+                                  추가
+                            </b-button>
                             </template>
       </b-table>
       </div>
@@ -125,6 +139,7 @@ export default {
   },
   data () {
     return {
+      dismissCountDown: 0,
       isrewite: false,
       viewtype: '',
       loading: '',
@@ -152,24 +167,12 @@ export default {
         { value: 9000000, text: '800 ~ 900만원 미만' },
         {value: 10000000, text: '900 ~ 1000만원 미만'}
       ],
-      fields: ['company', 'open', 'close', 'high', '상세보기'],
+      fields: ['company', 'open', 'close', 'high', 'detail', 'favorites'],
       stockUpList: [
-        // 상한가 주식 목록
-        { company: '삼성전자', present_price: 290000, predict_price: 320000},
-        { company: 'LG전자', present_price: 33500, predict_price: 36500},
       ],
       stockList: [
-        { company: '삼성전자', open: 100, close: 340000, high: 3500},
-        { company: 'LG전자', open: 120, close: 34000, high: 3600},
-        { company: 'SK하이닉스', open: 130, close: 27000, high: 2900},
-        { company: '아주대', open: 105, close: 50000, high: 7200},
-        { company: 'Tonez', open: 111, close: 22200, high: 3330},
-        { company: 'LG화학', open: 142, close: 26200, high: 3830},
-        { company: '현대자동차', open: 152, close: 32400, high: 4030}
       ],
-      testList: [{totalprofit: 3000, data: [{ company: '삼성전자', open: 100, close: 340000, high: 3500},
-        { company: 'LG전자', open: 120, close: 34000, high: 3600},
-        { company: 'SK하이닉스', open: 130, close: 27000, high: 2900}]}],
+      testList: [],
       showList:[],
       recomandList: [],
       resultList:[]
@@ -179,9 +182,15 @@ export default {
     //회사 정보 다 받아오기
     this.$http.get('/api/stock/all')
       .then((res) => {
-        console.log('Response Data: ' + res.data)
-        this.stockList = res.data
-        console.log("stock: " + this.stock)
+        console.log('모든 회사 종목')
+        console.log(res.data)
+        this.stockList=[];
+        for(var i=0;i<res.data.length;i++){
+          res.data[i].close = res.data[i].close.replace(/\,/g,'');
+          this.stockList.push(res.data[i]);
+        }
+
+        console.log("stock: " + this.stockList)
       }).catch((err) => [
         console.log(err)
       ]),
@@ -189,11 +198,15 @@ export default {
     //예측가격 정보 다 받아오기
     this.$http.get(`/api/money`)
       .then(res => {
+        console.log('모든 종목 예측 가격')
         console.log(res.data);
+        console.log('첫번째 종목 데이터')
+        console.log(res.data[0]);
         this.stockUpList = [];
-        for(var data in res.data){
-          if(data.state==1){
-            this.stockUpList.push(data);
+        for(var i = 0; i < res.data.length; i++){
+          if(res.data[i].state==1){
+            console.log(res.data[i].company)
+            this.stockUpList.push(res.data[i]);
           }
         }
       })
@@ -223,9 +236,15 @@ export default {
         this.showList = [];
 
         this.findReconmandStock();
-        this.getRecomand();
-        this.setShowList();
-        setTimeout(()=> {this.viewtype = 'B';}, 2000);
+        if(this.recomandList.length>this.recomandNumber){
+          this.getRecomand();
+          this.setShowList();
+          setTimeout(()=> {this.viewtype = 'B';}, 2000);
+        }
+        else{
+          this.viewtype = 'C';
+          alert('추천 상승 리스트 정보가 부족합니다.');
+        }
       }
       // predict에서 상한가 6종목 먼저 뽑음.
       // 1개2개3개 알고리즘돌림.
@@ -235,8 +254,8 @@ export default {
       for(var i in this.stockUpList){
         for(var j in this.stockList){
           if(this.stockUpList[i].company==this.stockList[j].company){
-            this.stockUpList[i].predict_price += (this.stockList[j].close-this.stockUpList[i].present_price);
-            this.stockUpList[i].present_price += (this.stockList[j].close-this.stockUpList[i].present_price);
+            this.stockUpList[i].predict_price = Math.round(this.stockList[j].close*(this.stockUpList[i].predict_price/this.stockUpList[i].present_price));
+            this.stockUpList[i].present_price = this.stockList[j].close;
             break;
           }
         }
@@ -246,7 +265,11 @@ export default {
     ,
     findReconmandStock(){
       for(var i in this.stockUpList){
-        if(this.stockUpList[i].present_price<(this.moneyselected/this.recomandNumber)){
+        console.log('외부');
+        console.log(this.stockUpList[i].present_price);
+        if(this.stockUpList[i].present_price<Math.round(this.moneyselected/this.recomandNumber)){
+          console.log('내부');
+          console.log(this.stockUpList[i].present_price);
           var moneyLimit = this.moneyselected/this.recomandNumber;
           var profit = this.stockUpList[i].predict_price-this.stockUpList[i].present_price;
           var stockNum = 0;
@@ -294,6 +317,8 @@ export default {
           numberResultList=this.recomandList.length;
         }
         for(var i=0; i<numberResultList; i++){
+          this.recomandList[i].preditprofit = Math.round(this.recomandList[i].preditprofit);
+          this.recomandList[i].cost = Math.round(this.recomandList[i].cost);
           this.testList.push({totalprofit: this.numberWithCommas(this.recomandList[i].preditprofit),totalcost: this.numberWithCommas(this.recomandList[i].cost), data: []});
           this.testList[i].data.push(this.recomandList[i]);
         }
@@ -375,6 +400,8 @@ export default {
         }
         for(var i=0; i<numberResultList;i++){
             this.testList[i] = tempdata[i];
+            this.testList[i].totalprofit = Math.round(this.testList[i].totalprofit);
+            this.testList[i].totalcost = Math.round(this.testList[i].totalcost);
             this.testList[i].totalprofit = this.numberWithCommas(this.testList[i].totalprofit);
             this.testList[i].totalcost = this.numberWithCommas(this.testList[i].totalcost);
         }
@@ -382,8 +409,11 @@ export default {
     },
     setShowList(){
       for(var i in this.recomandList){
+        console.log('recomandList');
+        console.log(this.recomandList[i]);
         for(var j in this.stockList){
           if(this.recomandList[i].company==this.stockList[j].company){
+            this.stockList[j].close = this.numberWithCommas(this.stockList[j].close);
             this.showList.push(this.stockList[j]);
           }
         }
@@ -419,6 +449,36 @@ export default {
     },
     showAlert() {
       this.dismissCountDown = this.dismissSecs;
+    },
+    pushFavorites(company) {
+      //즐겨찾기 추가 알람
+      this.dismissCountDown = this.dismissSecs;
+
+      console.log(company)
+
+      this.$http.post('/api/stock/addFavorites', {
+        userId: this.id,
+        company: company
+      })
+      .then((res) => {
+        console.log(res.status)
+      }).catch((err) => [
+        console.log(err)
+      ])
+    },
+    //동적라우팅
+    pushDetails(company){
+      //console.log(this.stock[index].company)
+      this.$router.push({
+        name: 'Detail',
+        params: {
+          company: company
+        }
+      }
+      )
+    },
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
     }
   }
 
