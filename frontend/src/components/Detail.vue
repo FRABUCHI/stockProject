@@ -12,8 +12,9 @@
     <b-card
           style="max-width: 50rem;margin-top:70px;margin-bottom:100px;padding:10px;padding-top:10px;margin-left:auto;margin-right:auto"
           tag="article">
-        <img src="@/assets/exgraph.png" align="center" style="margin-left: auto; margin-right: auto; display: block; width: 100%"/>
+        <img :src="stockUp.url" align="center" style="margin-left: auto; margin-right: auto; display: block; width: 100%"/>
         <div style="font-size: 28px;font-weight: bold"> 예측 가격 : {{" "+stockUp.predict_price+ " 원"}}</div>
+        <div style="font-size: 28px;font-weight: bold"> 오차율 : {{" "+stockUp.loss+" %"}}</div>
     </b-card>
   </div>
 </template>
@@ -66,6 +67,7 @@ export default {
         this.stockUp.predict_price = Math.round(this.stock[0].close*(this.stockUp.predict_price/this.stockUp.present_price));
         this.stockUp.predict_price = this.numberWithCommas(this.stockUp.predict_price);
         this.stockUp.present_price = this.stock[0].close;
+        this.stockUp.loss = Math.round(this.stockUp.loss*100)
 
         console.log('보정가격')
         console.log(this.stockUp.predict_price)
@@ -73,6 +75,8 @@ export default {
       .catch(err => {
         console.log(err);
       });
+
+      //
   },
   methods: {
     numberWithCommas(x) {
