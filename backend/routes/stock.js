@@ -66,7 +66,7 @@ router.post('/addFavorites', function (req, res, next) {
     };
     console.log(userId + ' ' + req.body.company)
     
-    User.findOneAndUpdate({id: userId}, {$push: {favorites: company}})
+    User.update({id: userId}, {$addToSet: {favorites: company}})
     .exec((err, data)=>{
         console.log(data.favorites)
         res.json(data.favorites)

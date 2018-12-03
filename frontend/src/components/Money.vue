@@ -37,7 +37,7 @@
     <div v-else-if="viewtype === 'B'">
       <br>
 
-      <div style="margin: auto;">
+      <div style="margin: auto;max-width: 60%">
         <b-card-group deck>
             <b-card img-src="https://i.imgur.com/GDb8E5Q.jpg"
                     img-alt="Card image"
@@ -131,6 +131,8 @@
 </template>
 
 <script>
+import { store } from '../store/store'
+
 import RingLoader from 'vue-spinner/src/RingLoader.vue'
 export default {
   name: 'Money',
@@ -140,6 +142,7 @@ export default {
   data () {
     return {
       dismissCountDown: 0,
+      dismissSecs: 1,
       isrewite: false,
       viewtype: '',
       loading: '',
@@ -175,8 +178,9 @@ export default {
       testList: [],
       showList:[],
       recomandList: [],
-      resultList:[]
-    }
+      resultList:[],
+      id: store.getters.id,
+    };
   },
   created() {
     //회사 정보 다 받아오기
@@ -265,11 +269,9 @@ export default {
     ,
     findReconmandStock(){
       for(var i in this.stockUpList){
-        console.log('외부');
-        console.log(this.stockUpList[i].present_price);
         if(this.stockUpList[i].present_price<Math.round(this.moneyselected/this.recomandNumber)){
-          console.log('내부');
-          console.log(this.stockUpList[i].present_price);
+          console.log('조건에 해당하는 종목 확인');
+          console.log(this.stockUpList[i].company);
           var moneyLimit = this.moneyselected/this.recomandNumber;
           var profit = this.stockUpList[i].predict_price-this.stockUpList[i].present_price;
           var stockNum = 0;
@@ -283,6 +285,8 @@ export default {
           if(this.recomandList.length<6){
             this.recomandList.push({company: this.stockUpList[i].company, stockNum: stockNum, preditprofit:profit*stockNum,
             cost: this.stockUpList[i].present_price*stockNum, close: this.stockUpList[i].present_price, predict_price: this.stockUpList[i].predict_price});
+            console.log('추천종목 처리');
+            console.log(this.stockUpList[i].company);
           }
           else{
             var minIndex = 0;
@@ -300,6 +304,8 @@ export default {
               this.recomandList[k].cost =this.stockUpList[i].present_price*stockNum;
               this.recomandList[k].close = this.stockUpList[i].present_price;
               this.recomandList[k].predict_price = this.stockUpList[i].predict_price;
+              console.log('추천종목 처리');
+              console.log(this.stockUpList[i].company);
             }
           }
         }
@@ -312,6 +318,8 @@ export default {
       var numberResultList = 3;
       var tempdata = [];
       this.sortRecomandList();
+      console.log('선택된 추천종목');
+      console.log(this.recomandList);
       if(this.recomandNumber==1){
         if(this.recomandList.length<3){
           numberResultList=this.recomandList.length;
@@ -381,6 +389,8 @@ export default {
                 tempdata[tempdata.length-1].data.push(this.recomandList[gridyNum]);
                 tempdata[tempdata.length-1].data.push(this.recomandList[gridyNum_two]);
                 tempdata[tempdata.length-1].data.push(balancedata);
+                console.log('추천조합 리스트 추가');
+                console.log(tempdata[tempdata.length-1].data);
               }
             }
           }
@@ -399,6 +409,8 @@ export default {
           numberResultList=tempdata.length;
         }
         for(var i=0; i<numberResultList;i++){
+            console.log('최종 선택된 리스트')
+            console.log(tempdata[i].data);
             this.testList[i] = tempdata[i];
             this.testList[i].totalprofit = Math.round(this.testList[i].totalprofit);
             this.testList[i].totalcost = Math.round(this.testList[i].totalcost);
@@ -420,7 +432,7 @@ export default {
       }
     },
     numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     getStockList(){ //페이지들어오자마자
       this.$http.get('/api/stock')
@@ -454,7 +466,7 @@ export default {
       //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
 
-      console.log(company)
+      console.log("아이디 확인"+this.id)
 
       this.$http.post('/api/stock/addFavorites', {
         userId: this.id,
