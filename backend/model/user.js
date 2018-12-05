@@ -60,4 +60,5 @@ User.methods.verify = function (password) {
     return this.password === encrypted
 }
 
+
 module.exports = mongoose.model('User', User, 'userList')
