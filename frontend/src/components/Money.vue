@@ -272,6 +272,8 @@ export default {
         if(this.stockUpList[i].present_price<Math.round(this.moneyselected/this.recomandNumber)){
           console.log('조건에 해당하는 종목 확인');
           console.log(this.stockUpList[i].company);
+          var lossweight = this.moneyselected/10000000;
+          console.log('lossweight = '+lossweight);
           var moneyLimit = this.moneyselected/this.recomandNumber;
           var profit = this.stockUpList[i].predict_price-this.stockUpList[i].present_price;
           var stockNum = 0;
@@ -284,16 +286,16 @@ export default {
           stockNum--;
           if(this.recomandList.length<6){
             this.recomandList.push({company: this.stockUpList[i].company, stockNum: stockNum, preditprofit:profit*stockNum,
-            cost: this.stockUpList[i].present_price*stockNum, close: this.stockUpList[i].present_price, predict_price: this.stockUpList[i].predict_price});
+            cost: this.stockUpList[i].present_price*stockNum, close: this.stockUpList[i].present_price, predict_price: this.stockUpList[i].predict_price, loss: this.stockUpList[i].loss});
             console.log('추천종목 처리');
             console.log(this.stockUpList[i].company);
           }
           else{
             var minIndex = 0;
-            var minProfit=this.recomandList[0].preditprofit;
+            var minProfit=this.recomandList[0].preditprofit*this.recomandList[0].loss*lossweight;
             for(var k in this.recomandList){
-              if(minProfit > this.recomandList[k].preditprofit){
-                minProfit = this.recomandList[k].preditprofit;
+              if(minProfit > this.recomandList[k].preditprofit*this.recomandList[k].loss*lossweight){
+                minProfit = this.recomandList[k].preditprofit*this.recomandList[k].loss*lossweight;
                 minIndex = k;
               }
             }
