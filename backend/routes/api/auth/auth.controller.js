@@ -75,8 +75,8 @@ exports.login = (req, res) => {
                         }, 
                         secret, 
                         {
-                            expiresIn: '7d',
-                            issuer: 'velopert.com',
+                            expiresIn: '7d',//토큰관련
+                            issuer: 'syl.com',//이슈에 필요한 사이트
                             subject: 'userInfo'
                         }, (err, token) => {
                             if (err) reject(err)
