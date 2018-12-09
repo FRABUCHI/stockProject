@@ -1,7 +1,7 @@
 <template>
     <div class='Stock'>
       <h1>종목 추천</h1>
-      <hr align="center" style="border: solid 0.5px black; width: 90%;"><br>
+      <hr align="center" style="border: solid 0.5px black;"><br>
         <input class='searchbar' type="text" v-on:input="search = $event.target.value"  placeholder="  주식명 입력"/>
         <b-alert :show="dismissCountDown"
              dismissible
@@ -10,11 +10,9 @@
              @dismiss-count-down="countDownChanged">
           <p>즐겨찾기에 추가되었습니다.</p>
         </b-alert>
-        <div class="test">
         <b-tabs>
             <b-tab title="관심 종목" v-on:click="getFavoritesList" active>
-            <div class="tables">
-             <b-table striped hover stcked="md"
+             <b-table stlye="margin-left:10%" striped hover stcked="md"
                       :items="favorFilteredList"
                       :fields="favorites_fields"
                       :current-page="currentPage"
@@ -32,11 +30,9 @@
                           </b-button>
                        </template>
              </b-table>
-             </div>
             </b-tab>
 
             <b-tab title="전체 종목" v-on:click="getStockList" active>
-              <div class="tables">
                 <b-table striped hover
                          :items="stockFilteredList"
                          :fields="stock_fields"
@@ -55,16 +51,14 @@
                            </b-button>
                           </template>
                 </b-table>
-              </div>
             </b-tab>
         </b-tabs>
-        </div>
-         <b-row class="paging">
-            <b-col md="6" class="page">
-             <b-pagination list-style="color: black"
+        <b-row class="paging">
+            <b-col md="6" class="page" style="margin-right:auto; margin-left:auto;">
+             <b-pagination list-style="color: black" align="center"
                :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
             </b-col>
-         </b-row>
+        </b-row>
     </div>
 </template>
 <script>
@@ -145,18 +139,35 @@ export default {
       ])
     },
     pushFavorites(company) {
+      var isInList= false;
       //즐겨찾기 추가 알람
       this.dismissCountDown = this.dismissSecs;
-
-      console.log(company)
-
-      this.$http.post('/api/stock/addFavorites', {
-        userId: this.id,
-        company: company
+      console.log(company);
+      this.$http.post('/api/stock/favorites', {
+        userId: this.id
       })
       .then((res) => {
-        console.log(res.status)
-      }).catch((err) => [
+        for(var i = 0; i < res.data.length; i++){
+            console.log('Response Data: ' + res.data[i].company)
+            if(res.data[i].company==company)
+            {
+              isInList = true;
+              break;
+            }
+          }
+        if(!isInList)
+        {
+          this.$http.post('/api/stock/addFavorites', {
+              userId: this.id,
+              company: company
+            })
+            .then((res) => {
+              console.log(res.status)
+            }).catch((err) => {
+              console.log(err)
+            })
+        }
+        }).catch((err) => [
         console.log(err)
       ])
     },
@@ -216,8 +227,8 @@ export default {
   text-align: center;
 }
 .paging{
-  padding-left:475px;
-  padding-right:500px;
+  margin-left:auto;
+  margin-right:auto;
   padding-top:15px;
 }
 .searchbar{

@@ -77,7 +77,7 @@ export default {
   methods: {
     signUp(evt) {
       evt.preventDefault();
-      alert(JSON.stringify(this.user));
+      alert('회원가입 되었습니다.');
 
       this.$store.dispatch('signup', {
         id: this.user.id,
